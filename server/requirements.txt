@@ -1,0 +1,6 @@
+pyotp
+aiohttp
+bcrypt
+cryptography
+pytz
+multidict

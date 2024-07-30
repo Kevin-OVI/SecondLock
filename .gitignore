@@ -1,0 +1,6 @@
+*.py[cod]
+*.log
+.idea/
+server/.env
+server/cert
+server/database.db

@@ -1,0 +1,124 @@
+:root {
+  --md-sys-color-primary: #0072ff;
+  --md-sys-color-secondary: #00c6ff;
+  --md-sys-color-background: #282828;
+  --md-sys-color-surface: #3c3c3c;
+  --md-filled-button-disabled-container-color: #b3b3b3;
+  --md-filled-button-disabled-label-text-color: white;
+}
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+}
+
+body,
+dialog {
+  padding: 0;
+  color: white;
+  font-family: "Roboto", sans-serif;
+  background: var(--md-sys-color-background);
+}
+
+a {
+  color: royalblue;
+}
+
+dialog {
+  background: var(--md-sys-color-surface);
+  border: 0;
+  border-radius: 28px;
+  padding: 24px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+dialog[open] {
+  display: flex;
+}
+
+dialog::backdrop {
+  backdrop-filter: brightness(0.5);
+}
+
+.dialog-title {
+  font-size: x-large;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group.subgroup {
+  margin-top: -1rem;
+}
+
+.input-group input {
+  padding: 1rem 15px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: transparent;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 300px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--md-sys-color-secondary);
+}
+
+.input-group label {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--md-sys-color-surface);
+  padding: 0 5px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 0.8rem;
+  color: var(--md-sys-color-secondary);
+}
+
+.input-group input:not(:focus-visible)::placeholder {
+  font-size: 0;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.frame {
+  height: 100%;
+}
+
+header {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-primary);
+  text-align: center;
+}
+
+.error {
+  color: red;
+}
+
+.hide-empty:empty {
+  display: none;
+}

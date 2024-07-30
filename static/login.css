@@ -1,0 +1,9 @@
+#frame-login {
+  display: flex;
+  align-items: center;
+}
+
+#frame-login .error {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
