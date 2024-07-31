@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>A2F Secure</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="login.css" />
-    <link rel="stylesheet" href="index.css" />
-    <link rel="stylesheet" href="qrscanner.css" />
+    <link rel="stylesheet" href="assets/style/styles.css" />
+    <link rel="stylesheet" href="assets/style/login.css" />
+    <link rel="stylesheet" href="assets/style/index.css" />
+    <link rel="stylesheet" href="assets/style/qrscanner.css" />
 
     <script type="importmap">
       {
@@ -23,12 +23,12 @@
       document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
     </script>
 
-    <script src="frames.js"></script>
-    <script src="api.js"></script>
-    <script src="login.js"></script>
-    <script src="jsQR.js"></script>
-    <script src="index.js"></script>
-    <script src="qrscanner.js"></script>
+    <script src="assets/scripts/frames.js"></script>
+    <script src="assets/scripts/api.js"></script>
+    <script src="assets/scripts/login.js"></script>
+    <script src="assets/scripts/external/jsQR.js"></script>
+    <script src="assets/scripts/index.js"></script>
+    <script src="assets/scripts/qrscanner.js"></script>
   </head>
   <body>
     <div id="frame-loading" class="frame"></div>
@@ -72,7 +72,7 @@
 
     <div id="frame-index" class="frame" style="display: none">
       <header class="main-header">
-        <img class="logo" src="logo/logo_full.svg" />
+        <img class="logo" src="assets/images/logo_full.svg" />
       </header>
       <div id="timer"></div>
 
@@ -81,15 +81,15 @@
       </div>
 
       <button class="add-btn fab" id="add-account-button">
-        <img src="logo/add_account.svg" />
+        <img src="assets/images/add_account.svg" />
       </button>
 
       <button class="add-btn fab" id="add-account-qr-button">
-        <img src="logo/add_account_qr.svg" />
+        <img src="assets/images/add_account_qr.svg" />
       </button>
 
       <button class="add-btn fab" id="add-account-manual-button">
-        <img src="logo/add_account_manual.svg" />
+        <img src="assets/images/add_account_manual.svg" />
       </button>
 
       <dialog id="add-account-dialog">
