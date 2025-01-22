@@ -11,3 +11,4 @@ SSL_PRIVKEY = os.getenv("SSL_PRIVKEY")
 DOMAINS = os.getenv("DOMAINS").split(",")
 HTTP_PORT = int(os.getenv("HTTP_PORT"))
 HTTPS_PORT = int(os.getenv("HTTPS_PORT"))
+DEV_ENV = os.getenv("DEV_ENV") == "true"

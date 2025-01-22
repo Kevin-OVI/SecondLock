@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import os.path
 import ssl
 import sys
 
@@ -24,11 +23,13 @@ if __name__ == '__main__':
 
     servers = []
     if HTTP_PORT:
-        servers.append(app.run(HTTP_PORT, None))
+        servers.append(app.run("0.0.0.0", HTTP_PORT, None))
+        servers.append(app.run("::", HTTP_PORT, None))
     if HTTPS_PORT:
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ssl_context.load_cert_chain(SSL_PUBKEY, SSL_PRIVKEY)
-        servers.append(app.run(HTTPS_PORT, ssl_context))
+        servers.append(app.run("0.0.0.0", HTTPS_PORT, ssl_context))
+        servers.append(app.run("::", HTTPS_PORT, ssl_context))
 
     app_run_tasks: tuple[asyncio.Task[None], ...] = tuple(loop.create_task(x) for x in servers)
 

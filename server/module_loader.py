@@ -12,7 +12,7 @@ import traceback
 from types import ModuleType
 from typing import TYPE_CHECKING, Sequence, Callable, Coroutine, Any, Iterable, Awaitable
 
-from aiohttp import web, ClientSession
+from aiohttp import web
 
 from core_utilities import Counter, AutoLogger, SiteHost, frozen_partial
 from core_utilities.functions import ainput
@@ -94,8 +94,6 @@ class ModulesManager(AutoLogger):
         self._special_module = None
 
     async def load_modules(self):
-        if ModuleStorage.client_session is None:
-            ModuleStorage.client_session = ClientSession()
         self._import_libs()
         await self._initialise_modules()
 
@@ -249,7 +247,6 @@ class ModuleStorage(AutoLogger):
     __slots__ = ()
 
     modules_manager: ModulesManager
-    client_session: ClientSession = None
     tasks = set()
 
     @classmethod

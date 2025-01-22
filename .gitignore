@@ -4,3 +4,4 @@
 server/.env
 server/cert
 server/database.db
+*.pyc

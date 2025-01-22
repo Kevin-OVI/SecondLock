@@ -10,7 +10,7 @@ def generate_code(secret: str) -> str:
     try:
         return pyotp.TOTP(secret).now()
     except binascii.Error:
-        raise CustomHTTPException.only_explain(HTTPStatus.BAD_REQUEST, "Invalid 'secret'")
+        raise CustomHTTPException.only_explain(HTTPStatus.UNPROCESSABLE_ENTITY, "Invalid 'secret'")
 
 
 def next_timecode_in() -> float:

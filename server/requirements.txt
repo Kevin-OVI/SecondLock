@@ -4,3 +4,4 @@ bcrypt
 cryptography
 pytz
 multidict
+pydantic

@@ -5,15 +5,14 @@ import json
 import mimetypes
 import os
 import posixpath
-from typing import Any, TypeVar, Type
+from typing import Any, Type
 
 from aiohttp import web_response, web, StreamReader
 
 from core_utilities import CustomRequest, CustomHTTPException, HTTPStatus
 
 __all__ = ("make_json_response", "load_json_request", "verify_content", "guess_type", "read_max",
-"translate_path", "is_api_path", "url_match", "json_compact_dumps")
-_TYPE = TypeVar("_TYPE")
+"translate_path", "is_api_path", "url_match", "json_compact_dumps", "fix_base64_padding")
 
 
 def json_compact_dumps(data: Any) -> str:
@@ -33,13 +32,11 @@ def make_json_response(status: int, data: Any) -> web_response.StreamResponse:
     return web.Response(status=status, content_type="application/json", charset="utf-8", body=json_compact_dumps(data).encode("utf-8"))
 
 
-def verify_content(value: Any, error_missing: str, expected_type: Type[_TYPE] = None, error_invalid_type: str = None) -> _TYPE:
+def verify_content(value: Any, error_missing: str, expected_type: Type = None, error_invalid_type: str = None):
     if value is None:
         raise CustomHTTPException.only_explain(HTTPStatus.BAD_REQUEST, error_missing)
     if expected_type is not None and not isinstance(value, expected_type):
         raise CustomHTTPException.only_explain(HTTPStatus.BAD_REQUEST, error_invalid_type)
-
-    return value
 
 
 def guess_type(path):
@@ -145,3 +142,10 @@ def url_match(path, match):
         return path.endswith(match[1:])
 
     return path == match
+
+
+def fix_base64_padding(s: str) -> str:
+    correct_padding = len(s) % 4
+    if correct_padding > 0:
+        correct_padding = 4 - correct_padding
+    return s + "=" * correct_padding

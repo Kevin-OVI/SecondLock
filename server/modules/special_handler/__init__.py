@@ -4,10 +4,11 @@ from typing import Callable, Sequence, Awaitable, Any
 from aiofiles import open as aopen
 from aiohttp import web, web_urldispatcher, hdrs
 
+from config import DOMAINS, DEV_ENV
+from decorators import route
 from core_utilities import SiteHost, CustomRequest, CustomHTTPException, silent_delitem, HTTPStatus
-from module_loader import ModulesManager, SpecialModule
+from module_loader import ModulesManager, SpecialModule, HTTPModule, PreHandlerModule
 from ..utils import is_api_path
-from config import DOMAINS
 
 SITEHOST_MAIN = SiteHost(*DOMAINS)
 
@@ -80,5 +81,25 @@ class SpecialHandlerModule(SpecialModule):
         return resp
 
 
+class SpecialPreHandlerModule(PreHandlerModule):
+    async def handle_response(self, request: CustomRequest, response: web.StreamResponse) -> None:
+        if DEV_ENV:
+            response.headers["Access-Control-Allow-Origin"] = "*"
+
+
+class SpecialHTTPModule(HTTPModule):
+    __slots__ = ()
+
+    if DEV_ENV:
+        @route("OPTIONS", "/api/{t:.*}")
+        async def options_all(self, request):
+            return web.HTTPNoContent(headers={
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Headers": "*"
+            })
+
+
 async def setup(module_manager: ModulesManager):
     module_manager.set_special_module(SpecialHandlerModule())
+    module_manager.add_prehandler_module(SpecialPreHandlerModule())
+    module_manager.add_http_module(SpecialHTTPModule())

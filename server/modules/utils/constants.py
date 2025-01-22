@@ -1,0 +1,3 @@
+__all__ = ("NS_MULTIPLIER",)
+
+NS_MULTIPLIER = 1_000_000_000

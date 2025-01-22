@@ -35,6 +35,7 @@ class CustomRequest(web_request.Request):
         self.user_agent: str = self.headers.get(hdrs.USER_AGENT, "")
         self.log_request = True
         self.received_at = local_now()
+        self.attached = {}
 
 
 class HTTPStatus(IntEnum):

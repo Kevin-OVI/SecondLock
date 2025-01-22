@@ -103,10 +103,10 @@ class WebApplication(web_server.Server, AutoLogger):
             writer: web_request.AbstractStreamWriter, task: asyncio.Task[None]) -> CustomRequest:
         return CustomRequest(self, message, payload, protocol, writer, task, self._loop, client_max_size=CLIENT_MAX_SIZE)
 
-    async def run(self, port: int, ssl_context: ssl.SSLContext | None):
+    async def run(self, host: str, port: int, ssl_context: ssl.SSLContext | None):
         runner = web.ServerRunner(self)
         await runner.setup()
-        address = f"{'http' if ssl_context is None else 'https'}://0.0.0.0:{port}/"
-        site = web.TCPSite(runner, "0.0.0.0", port, ssl_context=ssl_context)
+        address = f"{'http' if ssl_context is None else 'https'}://[{host}]:{port}/"
+        site = web.TCPSite(runner, host, port, ssl_context=ssl_context)
         await site.start()
         print(f"======= Serving on {address} ======")
