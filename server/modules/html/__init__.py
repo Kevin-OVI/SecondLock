@@ -15,7 +15,7 @@ DEFAULT_CSP = {
     "default-src": ["'self'", "data:"],
     "script-src": ["'self'", "'unsafe-inline'", "esm.run", "cdn.jsdelivr.net"],
     "style-src": ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
-    "img-src": ["'self'"],
+    "img-src": ["'self'", "data:"],
     "frame-src": ["'self'"],
     "connect-src": ["'self'"],
     "font-src": ["'self'", "fonts.gstatic.com"],
@@ -42,7 +42,7 @@ class HTMLModule(HTTPModule):
 
     @route("GET", "/{t:(?!api(?:$|/)).*}")
     async def get_file(self, request: CustomRequest) -> StreamResponse:
-        translated_path, is_dir = translate_path("../static", request)
+        translated_path, is_dir = translate_path("../front/dist/", request)
 
         if is_dir:
             raise CustomHTTPException(HTTPStatus.NOT_FOUND, "File Not Found")

@@ -1,0 +1,16 @@
+.colorGreen {
+  color: green;
+}
+
+.colorRed {
+  color: red;
+}
+
+.error {
+  margin: 0 0 0.3rem;
+  color: red;
+}
+
+.smallText {
+  font-size: small;
+}
