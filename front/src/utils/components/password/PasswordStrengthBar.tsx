@@ -1,5 +1,6 @@
 import {CSSProperties, useEffect, useState} from "react";
-import {GrCheckmark, GrClose} from "react-icons/gr";
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import styles from "./PasswordStrengthBar.module.css";
 import genericStyles from "../../../styles/generic.module.css";
 
@@ -82,7 +83,7 @@ export default function PasswordStrengthBar({password}: PasswordStrengthBarProps
 
     <div>
       {checkedRules.map(({label, passed}) => (
-        <div className={styles.check} key={label}>{passed ? <GrCheckmark className={genericStyles.colorGreen}/> : <GrClose className={genericStyles.colorRed}/>} {label}</div>
+        <div className={styles.check} key={label}>{passed ? <CheckIcon className={genericStyles.colorGreen}/> : <CloseIcon className={genericStyles.colorRed}/>} {label}</div>
       ))}
     </div>
   </div>
