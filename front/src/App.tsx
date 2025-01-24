@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SiteList from "./main/sitelist";
+import SiteList from "./appmain/sitelist";
 import Login from "./login";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import useAppContext from "./utils/context/Context";
 import ModalDisplayer from "./utils/modals/ModalDisplayer";
-import QRScanner from "./main/qrscanner";
+import QRScanner from "./appmain/qrscanner";
 
 const darkTheme = createTheme({
   palette: {
