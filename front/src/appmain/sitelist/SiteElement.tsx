@@ -39,7 +39,7 @@ export default function SiteElement({ site, handleRemoveSite, updateSiteCallback
     <div className={styles.accountItem}>
       <div className={styles.accountName}>
         <div>{site.name}</div>
-        <PopupState variant="popover" popupId={`site-context-menu-${site.id}`}>
+        <PopupState variant="popover">
           {(popupState: InjectedProps) => (
             <>
               <div className={styles.editIcon} {...bindTrigger(popupState)} />
@@ -64,7 +64,7 @@ export default function SiteElement({ site, handleRemoveSite, updateSiteCallback
           )}
         </PopupState>
       </div>
-      <Tooltip title={codeCopied ? "Code copié" : "Copier le code"} placement="right">
+      <Tooltip title={codeCopied ? "Code copié" : "Copier le code"}>
         <div
           className={styles.code}
           key={site.code}
