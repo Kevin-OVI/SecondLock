@@ -4,7 +4,8 @@ import styles from "../styles/form.module.css";
 import TextInput from "../utils/components/TextInput";
 import useAppContext from "../utils/context/Context";
 import { ACTION } from "../utils/context/actionTypes";
-import PasswordStrengthBar, { isPasswordStrong } from "../utils/components/password/PasswordStrengthBar";
+import PasswordStrengthBar from "../utils/components/password/PasswordStrengthBar";
+import isPasswordStrong from "../utils/components/password/checker.ts";
 
 interface FieldErrors {
   username?: string;
