@@ -77,7 +77,7 @@ export function AddSiteButtons({callback}: AddSiteButtonsProps) {
               </button>
             </Tooltip>
 
-            <Tooltip title="Entrée manuelle" placement="left">
+            <Tooltip title="Entrer manuellement" placement="left">
               <button onClick={() => {
                 closeMenu();
                 dispatch({type: ACTION.DISPLAY_MODAL, payload: <AddOrEditSiteModal callback={callback}/>});
