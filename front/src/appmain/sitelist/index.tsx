@@ -15,7 +15,7 @@ function SiteListEmpty() {
   return <div className={styles.listContentMessage}>
     <div>
       <h2>Bienvenue sur SecondLock</h2>
-      <p>Ajoutez votre premier site en utilisant le bouton en bas à droite</p>
+      <p>Ajoutez votre premier compte en utilisant le bouton en bas à droite</p>
     </div>
   </div>;
 }
