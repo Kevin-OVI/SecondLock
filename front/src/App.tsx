@@ -1,10 +1,9 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SiteList from "./appmain/sitelist";
 import Login from "./login";
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 import useAppContext from "./utils/context/Context";
 import ModalDisplayer from "./utils/modals/ModalDisplayer";
-import QRScanner from "./appmain/qrscanner";
+import Main from "./appmain";
+import {BrowserRouter} from "react-router-dom";
 
 const darkTheme = createTheme({
   palette: {
@@ -12,25 +11,17 @@ const darkTheme = createTheme({
   },
 });
 
-function Main() {
-  return (
-    <RouterProvider
-      router={createBrowserRouter([
-        { path: "/", element: <SiteList /> },
-        { path: "/qrscanner", element: <QRScanner /> },
-      ])}
-    />
-  );
-}
 
 export default function App() {
-  const [{ token }] = useAppContext();
+  const [{token}] = useAppContext();
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      {token ? <Main /> : <Login />}
-      <ModalDisplayer />
+      <BrowserRouter>
+        <CssBaseline/>
+        {token ? <Main/> : <Login/>}
+        <ModalDisplayer/>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

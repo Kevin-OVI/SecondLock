@@ -131,13 +131,6 @@ export default function SiteList() {
 
   return (
     <>
-      <header className={styles.header}>
-        <img className={styles.logo} src="/logo_full.svg" alt="Logo" />
-      </header>
-      <div className={styles.refreshTimer}>
-        <div ref={refreshAnimationRef}></div>
-      </div>
-
       {sites ? (
         sites.length > 0 ? (
           <>

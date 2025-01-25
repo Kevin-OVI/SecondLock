@@ -1,17 +1,3 @@
-.header {
-  background: var(--color-surface);
-  text-align: center;
-}
-
-.header {
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  height: 80px;
-}
-
 .accountList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -102,7 +88,8 @@
 .refreshTimer {
   width: 100%;
   height: 8px;
-  position: relative;
+  position: sticky;
+  top: var(--nav-bar-height);
 }
 
 .refreshTimer > div {
