@@ -25,8 +25,8 @@ const transitionStyles: Record<TransitionStatus, CSSProperties> = {
   entering: {opacity: 1},
   entered: {opacity: 1},
   exiting: {opacity: 0},
-  exited: {opacity: 0},
-  unmounted: {opacity: 0},
+  exited: {opacity: 0, display: "none"},
+  unmounted: {opacity: 0, display: "none"},
 };
 
 export function AddSiteButtons({callback}: AddSiteButtonsProps) {
