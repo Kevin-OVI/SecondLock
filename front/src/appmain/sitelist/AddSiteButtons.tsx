@@ -9,6 +9,7 @@ import AddAccountManualImage from "./images/add_account_manual.svg";
 import {Transition, TransitionStatus} from "react-transition-group";
 import styles from "./index.module.css";
 import {Tooltip} from "@mui/material";
+import QRScanner from "./QRScanner";
 
 export interface InputSite {
   id?: number;
