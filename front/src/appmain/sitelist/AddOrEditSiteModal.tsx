@@ -69,7 +69,7 @@ export default function AddOrEditSiteModal({ editSite, callback }: AddOrEditSite
 
   return (
     <GenericModal
-      title="Ajouter un compte"
+      title={editSite ? "Modifier un compte" : "Ajouter un compte"}
       onValidate={handleSubmit}
       exitOnClick={false}
       buttonsState={buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT}
