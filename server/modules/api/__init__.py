@@ -144,7 +144,8 @@ class APIModule(HTTPModule):
         return make_json_response(HTTPStatus.OK, {
             "id": site_id,
             "name": site_payload.name,
-            "code": code
+            "code": code,
+            "next_update": next_timecode_in()
         })
 
     @route("DELETE", "/api/sites/{id:\\d+}")
