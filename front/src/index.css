@@ -11,6 +11,10 @@
   --nav-bar-height: 64px;
 }
 
+html, body, #root {
+  height: 100%;
+}
+
 form,
 .MuiDialog-container > .MuiPaper-root {
   width: min(500px, calc(100% - 4rem));

@@ -7,11 +7,18 @@ import {FieldErrors, InputSite} from "./AddOrEditSiteModal";
 import {CircularProgress} from "@mui/material";
 
 function SiteListLoading() {
-  return <div className={styles.siteListLoading}>Chargement...</div>;
+  return <div className={styles.listContentMessage}>
+    <CircularProgress/>
+  </div>;
 }
 
 function SiteListEmpty() {
-  return <div className={styles.siteListEmpty}>Aucun site</div>;
+  return <div className={styles.listContentMessage}>
+    <div>
+      <h2>Bienvenue sur SecondLock</h2>
+      <p>Ajoutez votre premier site en utilisant le bouton en bas à droite</p>
+    </div>
+  </div>;
 }
 
 export default function SiteList() {
