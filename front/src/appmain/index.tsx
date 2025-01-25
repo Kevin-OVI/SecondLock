@@ -1,6 +1,5 @@
 import {Route, Routes, useNavigate} from "react-router-dom";
 import SiteList from "./sitelist";
-// import QRScanner from "./qrscanner";
 import {AppBar, Container, IconButton, ListItemIcon, Menu, MenuItem, Toolbar, Tooltip} from "@mui/material";
 import styles from "./index.module.css";
 import PopupState, {bindMenu, bindTrigger, InjectedProps} from "material-ui-popup-state";
@@ -57,7 +56,6 @@ export default function Main() {
 
     <Routes>
       <Route path="/" element={<SiteList/>}/>
-      {/*<Route path="qrscanner" element={<QRScanner/>}/>*/}
       <Route path="settings" element={<Settings/>}/>
     </Routes>
   </>;

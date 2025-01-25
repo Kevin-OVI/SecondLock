@@ -71,7 +71,7 @@ export function AddSiteButtons({callback}: AddSiteButtonsProps) {
             <Tooltip title="Scanner un QR-code" placement="left">
               <button onClick={() => {
                 closeMenu();
-                // TODO QR Scanner
+                dispatch({type: ACTION.DISPLAY_MODAL, payload: <QRScanner callback={callback}/>});
               }}>
                 <img src={AddAccountQrImage} alt="Scanner un QR-code"/>
               </button>

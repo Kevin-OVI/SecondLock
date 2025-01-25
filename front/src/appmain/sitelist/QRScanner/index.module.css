@@ -1,0 +1,68 @@
+.scanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-surface);
+  z-index: 2000;
+}
+
+.backButton {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2002;
+}
+
+.scannerOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2001;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.scannerVideo,
+.scannerVideo ~ canvas {
+  min-height: 100vh;
+  min-width: 100vw;
+  position: relative !important;
+  left: 50% !important;
+  top: 50%;
+  translate: -50% -50%;
+  object-fit: cover;
+}
+
+.scannerVideo ~ canvas {
+  top: -50% !important;
+}
+
+.scannerContainer > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scannerContainer > div > div {
+  --overlay-size: calc(min(90vw, 90vh));
+  max-width: var(--overlay-size) !important;
+  max-height: var(--overlay-size) !important;
+  flex-grow: 1;
+}
+
+.scannerContainer > div > div > svg {
+  --border-size: calc(max(100vw, 100vh) - var(--overlay-size));
+  border: var(--border-size) solid rgba(0, 0, 0, 0.3) !important;
+  translate: calc(-1 * var(--border-size)) calc(-1 * var(--border-size));
+}
