@@ -4,10 +4,11 @@ import LocalMenu from "../../utils/components/LocalMenu";
 import AddAccountImage from "./images/add_account.svg";
 import AddAccountQrImage from "./images/add_account_qr.svg";
 import {ACTION} from "../../utils/context/actionTypes";
-import AddOrEditSiteModal, { SiteInputCallback } from "./AddOrEditSiteModal";
+import AddOrEditSiteModal, {SiteInputCallback} from "./AddOrEditSiteModal";
 import AddAccountManualImage from "./images/add_account_manual.svg";
 import {Transition, TransitionStatus} from "react-transition-group";
 import styles from "./index.module.css";
+import {Tooltip} from "@mui/material";
 
 interface AddSiteButtonsProps {
   callback: SiteInputCallback;
@@ -46,9 +47,11 @@ export function AddSiteButtons({callback}: AddSiteButtonsProps) {
     <LocalMenu
       className={styles.addButtons}
       hideCallback={closeMenu}>
-      <button onClick={displayOrHideMenu} className={display ? "open" : ""}>
-        <img src={AddAccountImage} alt="Ajouter un compte"/>
-      </button>
+      <Tooltip title="Ajouter un compte" placement="left">
+        <button onClick={displayOrHideMenu} className={display ? "open" : ""}>
+          <img src={AddAccountImage} alt="Ajouter un compte"/>
+        </button>
+      </Tooltip>
 
       <Transition nodeRef={menuButtonsRef} in={display} timeout={transitionDuration}>
         {(state: TransitionStatus) => (
@@ -56,19 +59,23 @@ export function AddSiteButtons({callback}: AddSiteButtonsProps) {
             ...defaultStyle,
             ...transitionStyles[state],
           }}>
-            <button onClick={() => {
-              closeMenu();
-              // TODO QR Scanner
-            }}>
-              <img src={AddAccountQrImage} alt="Scanner un QR-code"/>
-            </button>
+            <Tooltip title="Scanner un QR-code" placement="left">
+              <button onClick={() => {
+                closeMenu();
+                // TODO QR Scanner
+              }}>
+                <img src={AddAccountQrImage} alt="Scanner un QR-code"/>
+              </button>
+            </Tooltip>
 
-            <button onClick={() => {
-              closeMenu();
-              dispatch({type: ACTION.DISPLAY_MODAL, payload: <AddOrEditSiteModal callback={callback}/>});
-            }}>
-              <img src={AddAccountManualImage} alt="Entrée manuelle"/>
-            </button>
+            <Tooltip title="Entrée manuelle" placement="left">
+              <button onClick={() => {
+                closeMenu();
+                dispatch({type: ACTION.DISPLAY_MODAL, payload: <AddOrEditSiteModal callback={callback}/>});
+              }}>
+                <img src={AddAccountManualImage} alt="Entrée manuelle"/>
+              </button>
+            </Tooltip>
           </div>
         )}
       </Transition>
