@@ -1,9 +1,8 @@
 import {useEffect, useRef, useState} from "react";
 import useAppContext from "../../utils/context/Context";
 import styles from "./index.module.css";
-import {AddSiteButtons} from "./AddSiteButtons";
+import {AddSiteButtons, FieldErrors, InputSite} from "./AddSiteButtons";
 import SiteElement, {Site} from "./SiteElement";
-import {FieldErrors, InputSite} from "./AddOrEditSiteModal";
 import {CircularProgress} from "@mui/material";
 
 function SiteListLoading() {

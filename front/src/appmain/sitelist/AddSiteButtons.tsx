@@ -4,11 +4,19 @@ import LocalMenu from "../../utils/components/LocalMenu";
 import AddAccountImage from "./images/add_account.svg";
 import AddAccountQrImage from "./images/add_account_qr.svg";
 import {ACTION} from "../../utils/context/actionTypes";
-import AddOrEditSiteModal, {SiteInputCallback} from "./AddOrEditSiteModal";
+import AddOrEditSiteModal from "./AddOrEditSiteModal";
 import AddAccountManualImage from "./images/add_account_manual.svg";
 import {Transition, TransitionStatus} from "react-transition-group";
 import styles from "./index.module.css";
 import {Tooltip} from "@mui/material";
+
+export interface InputSite {
+  id?: number;
+  name: string;
+  secret: string;
+}
+export type FieldErrors = Partial<Record<"name" | "secret", string>>;
+export type SiteInputCallback = (site: InputSite, errors: FieldErrors) => Promise<boolean>;
 
 interface AddSiteButtonsProps {
   callback: SiteInputCallback;

@@ -3,15 +3,7 @@ import { Site } from "./SiteElement";
 import GenericModal, { ModalButtonsState } from "../../utils/modals/GenericModal";
 import TextInput from "../../utils/components/TextInput";
 import useGenericModal from "../../utils/modals/useGenericModal";
-
-export interface InputSite {
-  id?: number;
-  name: string;
-  secret: string;
-}
-
-export type FieldErrors = Partial<Record<"name" | "secret", string>>;
-export type SiteInputCallback = (site: InputSite, errors: FieldErrors) => Promise<boolean>;
+import {FieldErrors, SiteInputCallback} from "./AddSiteButtons.tsx";
 
 interface AddOrEditSiteModalProps {
   editSite?: Site;

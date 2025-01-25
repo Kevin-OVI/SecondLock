@@ -1,11 +1,13 @@
 import GenericModal from "../../utils/modals/GenericModal";
 import useGenericModal from "../../utils/modals/useGenericModal";
-import { SiteElementProps } from "./SiteElement";
+import {Site} from "./SiteElement";
 import useAppContext from "../../utils/context/Context";
 
+export type SiteRemoveCallback = (id: number) => void;
+
 export interface DeleteSiteModalProps {
-    site: SiteElementProps["site"];
-    handleRemoveSite: SiteElementProps["handleRemoveSite"];
+    site: Site;
+    handleRemoveSite: SiteRemoveCallback;
 }
 
 export default function DeleteSiteModal({ site, handleRemoveSite }: DeleteSiteModalProps) {
