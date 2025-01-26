@@ -34,7 +34,6 @@ export default function AddOrEditSiteModal({ editSite, callback }: AddOrEditSite
 
   async function handleSubmit() {
     if (buttonsDisabled) {
-      console.error("Button is disabled, cannot login");
       return;
     }
     setButtonsDisabled(true);
