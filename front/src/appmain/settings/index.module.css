@@ -1,7 +1,18 @@
 .settings {
+  margin: 2rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-surface);
+}
+
+.actions {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100% - var(--nav-bar-height));
+  gap: 2rem;
+  width: fit-content;
+}
+
+.actionRow {
+  display: flex;
+  gap: 4rem;
 }
