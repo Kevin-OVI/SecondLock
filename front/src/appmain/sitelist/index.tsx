@@ -1,9 +1,10 @@
 import {useEffect, useRef, useState} from "react";
 import useAppContext from "../../utils/context/Context";
 import styles from "./index.module.css";
-import {AddSiteButtons, FieldErrors, InputSite} from "./AddSiteButtons";
+import {AddSiteButtons, InputSite} from "./AddSiteButtons";
 import SiteElement, {Site} from "./SiteElement";
 import {CircularProgress} from "@mui/material";
+import {FieldErrors} from "../../utils/types.ts";
 
 function SiteListLoading() {
   return <div className={styles.listContentMessage}>

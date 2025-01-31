@@ -10,13 +10,13 @@ import {Transition, TransitionStatus} from "react-transition-group";
 import styles from "./index.module.css";
 import {Tooltip} from "@mui/material";
 import QRScanner from "./QRScanner";
+import {FieldErrors} from "../../utils/types.ts";
 
 export interface InputSite {
   id?: number;
   name: string;
   secret: string;
 }
-export type FieldErrors = Partial<Record<"name" | "secret", string>>;
 export type SiteInputCallback = (site: InputSite, errors: FieldErrors) => Promise<boolean>;
 
 interface AddSiteButtonsProps {

@@ -3,7 +3,8 @@ import { Site } from "./SiteElement";
 import GenericModal, { ModalButtonsState } from "../../utils/modals/GenericModal";
 import TextInput from "../../utils/components/TextInput";
 import useGenericModal from "../../utils/modals/useGenericModal";
-import {FieldErrors, SiteInputCallback} from "./AddSiteButtons.tsx";
+import {SiteInputCallback} from "./AddSiteButtons.tsx";
+import {FieldErrors} from "../../utils/types.ts";
 
 interface AddOrEditSiteModalProps {
   editSite?: Site;
