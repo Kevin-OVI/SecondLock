@@ -27,7 +27,7 @@ export default function EditUsernameModal({editUser}: EditUsernameProps) {
     const errors: FieldErrors = {};
 
     validateUsername(username, errors);
-    validatePassword(password, errors);
+    validatePassword(password, errors, "currentPassword");
 
     setErrors(errors);
 
