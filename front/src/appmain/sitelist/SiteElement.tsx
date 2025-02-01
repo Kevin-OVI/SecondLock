@@ -1,12 +1,12 @@
 import {useState, useEffect} from "react";
 import {ACTION} from "../../utils/context/actionTypes";
-import useAppContext from "../../utils/context/Context";
 import AddOrEditSiteModal from "./AddOrEditSiteModal";
 import DeleteSiteModal, {SiteRemoveCallback} from "./DeleteSiteModal";
 import styles from "./index.module.css";
 import {Menu, MenuItem, Tooltip} from "@mui/material";
 import PopupState, {bindMenu, bindTrigger, InjectedProps} from "material-ui-popup-state";
 import {SiteInputCallback} from "./AddSiteButtons.tsx";
+import useAppContext from "../../utils/context/useAppContext.ts";
 
 export interface Site {
   id: number;
@@ -66,8 +66,8 @@ export default function SiteElement({site, handleRemoveSite, updateSiteCallback}
         <div
           className={styles.code}
           key={site.code}
-          onClick={() => {
-            navigator.clipboard.writeText(site.code);
+          onClick={async () => {
+            await navigator.clipboard.writeText(site.code);
             setCodeCopied(true);
           }}>
           <div>

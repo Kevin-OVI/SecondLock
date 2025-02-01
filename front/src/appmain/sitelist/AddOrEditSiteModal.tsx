@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, KeyboardEvent } from "react";
 import { Site } from "./SiteElement";
-import GenericModal, { ModalButtonsState } from "../../utils/modals/GenericModal";
+import GenericModal from "../../utils/modals/GenericModal";
 import TextInput from "../../utils/components/TextInput";
 import useGenericModal from "../../utils/modals/useGenericModal";
 import {SiteInputCallback} from "./AddSiteButtons.tsx";
-import {FieldErrors} from "../../utils/types.ts";
+import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
 
 interface AddOrEditSiteModalProps {
   editSite?: Site;
@@ -55,7 +55,7 @@ export default function AddOrEditSiteModal({ editSite, callback }: AddOrEditSite
     }
   }
 
-  async function handleEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+  async function handleEnter(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") await handleSubmit();
   }
 

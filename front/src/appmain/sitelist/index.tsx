@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from "react";
-import useAppContext from "../../utils/context/Context";
+import {useCallback, useEffect, useRef, useState} from "react";
 import styles from "./index.module.css";
 import {AddSiteButtons, InputSite} from "./AddSiteButtons";
 import SiteElement, {Site} from "./SiteElement";
 import {CircularProgress} from "@mui/material";
 import {FieldErrors} from "../../utils/types.ts";
+import useAppContext from "../../utils/context/useAppContext.ts";
 
 function SiteListLoading() {
   return <div className={styles.listContentMessage}>
@@ -76,7 +76,7 @@ export default function SiteList() {
     return false;
   }
 
-  async function fetchSites(): Promise<number | null> {
+  const fetchSites = useCallback(async () => {
     const res = await api.fetchAPIRaiseStatus("GET", "/sites");
     if (!res) return null;
 
@@ -88,7 +88,7 @@ export default function SiteList() {
       alert(`Erreur ${res.status} : ${res.json.explain}`);
     }
     return null;
-  }
+  }, [api]);
 
   useEffect(() => {
     async function onExpireUpdate() {
@@ -113,7 +113,7 @@ export default function SiteList() {
 
     const now = new Date().getTime();
     if (nextUpdateAt < now) {
-      onExpireUpdate();
+      onExpireUpdate().catch(console.error);
       return;
     }
 
@@ -134,7 +134,7 @@ export default function SiteList() {
         animation.cancel();
       }
     };
-  }, [nextUpdateAt, refreshAnimationRef, refreshAnimationRef.current]);
+  }, [fetchSites, nextUpdateAt, refreshAnimationRef]);
 
   return (
     <>

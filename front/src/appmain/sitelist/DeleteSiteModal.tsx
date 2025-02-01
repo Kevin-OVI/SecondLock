@@ -1,7 +1,8 @@
 import GenericModal from "../../utils/modals/GenericModal";
 import useGenericModal from "../../utils/modals/useGenericModal";
 import {Site} from "./SiteElement";
-import useAppContext from "../../utils/context/Context";
+
+import useAppContext from "../../utils/context/useAppContext.ts";
 
 export type SiteRemoveCallback = (id: number) => void;
 

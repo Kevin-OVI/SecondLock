@@ -1,18 +1,7 @@
-import {createContext, useContext, useReducer, ReactNode, Dispatch, useEffect, ReactElement} from "react";
-import {ACTION} from "./actionTypes";
-import {API} from "./api";
-
-export interface AppContextProps {
-  username?: string;
-  token?: string;
-  api: API;
-  displayedModal?: ReactElement;
-}
-
-export interface Action {
-  type: ACTION;
-  payload?: any;
-}
+import {ReactElement, ReactNode, useEffect, useReducer} from "react";
+import {ACTION} from "./actionTypes.ts";
+import {Action, AppContextProps, Context} from "./Context.ts";
+import {API} from "./api.ts";
 
 const initialState: AppContextProps = {
   username: localStorage.username,
@@ -31,15 +20,10 @@ const reducer = (state: AppContextProps, action: Action): AppContextProps => {
     case ACTION.DISPLAY_MODAL:
       state = {...state, displayedModal: action.payload};
       break;
-    default:
-      console.error(`Unknown action type ${action.type}; payload=${action.payload}`);
-      break;
   }
 
   return state;
 };
-
-const Context = createContext<[AppContextProps, Dispatch<Action>] | null>(null);
 
 interface ContextProviderProps {
   children: ReactNode;
@@ -52,9 +36,9 @@ export function ContextProvider({children}: ContextProviderProps): ReactElement 
 
   useEffect(() => {
     if (import.meta.env.DEV) {
-      // @ts-ignore
+      // @ts-expect-error Set debugging variables
       window.context = state;
-      // @ts-ignore
+      // @ts-expect-error Set debugging variables
       window.dispatchContext = dispatch;
     }
     if (state.token) localStorage.token = state.token;
@@ -65,12 +49,4 @@ export function ContextProvider({children}: ContextProviderProps): ReactElement 
   }, [state]); // Only re-run the effect if cart changes
 
   return <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>;
-};
-
-export default function useAppContext(): [AppContextProps, Dispatch<Action>] {
-  const context = useContext(Context);
-  if (!context) {
-    throw new Error("useAppContext must be used within a ContextProvider");
-  }
-  return context;
 }

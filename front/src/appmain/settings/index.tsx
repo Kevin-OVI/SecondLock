@@ -1,11 +1,11 @@
 import styles from "./index.module.css";
 import genericStyles from "../../styles/generic.module.css";
-import useAppContext from "../../utils/context/Context.tsx";
 import {Button} from "@mui/material";
 import EditUsernameModal from "./EditUsernameModal.tsx";
 import {ACTION} from "../../utils/context/actionTypes.ts";
 import {FieldErrors} from "../../utils/types.ts";
 import EditPasswordModal from "./EditPasswordModal.tsx";
+import useAppContext from "../../utils/context/useAppContext.ts";
 
 
 interface EditUserFields {

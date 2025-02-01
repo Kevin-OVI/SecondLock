@@ -4,9 +4,9 @@ import {SiteInputCallback} from "../AddSiteButtons.tsx";
 import styles from "./index.module.css";
 import {CircularProgress, IconButton} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import useAppContext from "../../../utils/context/Context.tsx";
 import {ACTION} from "../../../utils/context/actionTypes.ts";
 import {FieldErrors} from "../../../utils/types.ts";
+import useAppContext from "../../../utils/context/useAppContext.ts";
 
 const UNSUPPORTED_OTP_METHOD = "Nous ne prenons pas en charge cette méthode d'OTP : %s.";
 const INVALID_QR_CODE = "Le format du QR Code est invalide";

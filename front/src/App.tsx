@@ -1,9 +1,9 @@
 import Login from "./login";
 import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
-import useAppContext from "./utils/context/Context";
 import ModalDisplayer from "./utils/modals/ModalDisplayer";
 import Main from "./appmain";
 import {BrowserRouter} from "react-router-dom";
+import useAppContext from "./utils/context/useAppContext.ts";
 
 const darkTheme = createTheme({
   palette: {

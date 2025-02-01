@@ -3,10 +3,10 @@ import SiteList from "./sitelist";
 import {AppBar, Container, IconButton, ListItemIcon, Menu, MenuItem, Toolbar, Tooltip} from "@mui/material";
 import styles from "./index.module.css";
 import PopupState, {bindMenu, bindTrigger, InjectedProps} from "material-ui-popup-state";
-import useAppContext from "../utils/context/Context.tsx";
 import {AccountCircle, Logout, Settings as SettingsIcon} from "@mui/icons-material";
 import {ACTION} from "../utils/context/actionTypes.ts";
 import Settings from "./settings";
+import useAppContext from "../utils/context/useAppContext.ts";
 
 export default function Main() {
   const navigate = useNavigate();

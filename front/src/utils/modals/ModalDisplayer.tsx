@@ -1,4 +1,4 @@
-import useAppContext from "../context/Context";
+import useAppContext from "../context/useAppContext.ts";
 
 export default function ModalDisplayer() {
   const [{displayedModal}] = useAppContext();

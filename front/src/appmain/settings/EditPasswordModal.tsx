@@ -1,7 +1,7 @@
-import GenericModal, {ModalButtonsState} from "../../utils/modals/GenericModal.tsx";
+import GenericModal from "../../utils/modals/GenericModal.tsx";
 import {useState} from "react";
 import {wrapHandlerEnter} from "../../utils/functions.ts";
-import {FieldErrors} from "../../utils/types.ts";
+import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
 import PasswordField from "../../utils/components/fields/PasswordField.tsx";
 import {validatePassword} from "../../utils/components/fields/validation.ts";
 import {EditUserCallback} from "./index.tsx";

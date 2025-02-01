@@ -1,12 +1,12 @@
-import GenericModal, {ModalButtonsState} from "../../utils/modals/GenericModal.tsx";
+import GenericModal from "../../utils/modals/GenericModal.tsx";
 import {useState} from "react";
 import UsernameField from "../../utils/components/fields/UsernameField.tsx";
 import {wrapHandlerEnter} from "../../utils/functions.ts";
-import {FieldErrors} from "../../utils/types.ts";
-import useAppContext from "../../utils/context/Context.tsx";
+import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
 import PasswordField from "../../utils/components/fields/PasswordField.tsx";
 import {validatePassword, validateUsername} from "../../utils/components/fields/validation.ts";
 import {EditUserCallback} from "./index.tsx";
+import useAppContext from "../../utils/context/useAppContext.ts";
 
 
 interface EditUsernameProps {

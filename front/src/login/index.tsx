@@ -1,7 +1,6 @@
 import {useState} from "react";
 import {Button, Link} from "@mui/material";
 import styles from "../styles/form.module.css";
-import useAppContext from "../utils/context/Context";
 import {ACTION} from "../utils/context/actionTypes";
 import PasswordStrengthBar from "../utils/components/password/PasswordStrengthBar";
 import UsernameField from "../utils/components/fields/UsernameField.tsx";
@@ -10,6 +9,7 @@ import PasswordField from "../utils/components/fields/PasswordField.tsx";
 import {FieldErrors} from "../utils/types.ts";
 import PasswordConfirmField from "../utils/components/fields/PasswordConfirmField.tsx";
 import {validatePassword, validateUsername} from "../utils/components/fields/validation.ts";
+import useAppContext from "../utils/context/useAppContext.ts";
 
 export default function Login() {
   const [{username: storedUsername, api}, dispatch] = useAppContext();

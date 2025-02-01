@@ -1,5 +1,4 @@
 import {useState} from "react";
-import useAppContext from "../../utils/context/Context";
 import {ACTION} from "../../utils/context/actionTypes";
 import AddOrEditSiteModal from "./AddOrEditSiteModal";
 import {SpeedDial, SpeedDialAction, SpeedDialIcon} from "@mui/material";
@@ -7,6 +6,7 @@ import QRScanner from "./QRScanner";
 import {FieldErrors} from "../../utils/types.ts";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import CreateIcon from "@mui/icons-material/Create";
+import useAppContext from "../../utils/context/useAppContext.ts";
 
 export interface InputSite {
   id?: number;

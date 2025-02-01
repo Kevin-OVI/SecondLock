@@ -1,6 +1,7 @@
 import { Dispatch } from "react";
-import { Action, AppContextProps } from "./Context";
+import { Action, AppContextProps } from "./Context.ts";
 import { ACTION } from "./actionTypes";
+import {JSONType} from "../types.ts";
 
 type HttpHeaders = {
   [key: string]: string;
@@ -8,12 +9,12 @@ type HttpHeaders = {
 
 interface APIResponse {
   status: number;
-  json?: any;
+  json?: JSONType;
   text?: string;
 }
 
 interface APIFetchParams {
-  json?: any;
+  json?: JSONType;
   headers?: HttpHeaders;
 }
 
