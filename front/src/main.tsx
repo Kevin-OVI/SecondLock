@@ -3,9 +3,12 @@ import "./index.css";
 import App from "./App.tsx";
 
 import {ContextProvider} from "./utils/context/ContextProvider.tsx";
+import {StrictMode} from "react";
 
 createRoot(document.getElementById("root")!).render(
-  <ContextProvider>
-    <App />
-  </ContextProvider>
+  <StrictMode>
+    <ContextProvider>
+      <App />
+    </ContextProvider>
+  </StrictMode>
 );
