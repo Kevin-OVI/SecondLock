@@ -8,7 +8,7 @@ import {wrapHandlerEnter} from "../utils/functions.ts";
 import PasswordField from "../utils/components/fields/PasswordField.tsx";
 import {FieldErrors} from "../utils/types.ts";
 import PasswordConfirmField from "../utils/components/fields/PasswordConfirmField.tsx";
-import {validatePassword, validateUsername} from "../utils/components/fields/validation.ts";
+import {validateNewPassword, validatePassword, validateUsername} from "../utils/components/fields/validation.ts";
 import useAppContext from "../utils/context/useAppContext.ts";
 import {Navigate} from "react-router-dom";
 
@@ -27,7 +27,10 @@ export default function Login() {
     const errors: FieldErrors = {};
 
     validateUsername(username, errors);
-    validatePassword(password, errors, register ? passwordConfirm : undefined);
+    validatePassword(password, errors);
+    if (register) {
+      validateNewPassword(password, passwordConfirm, errors);
+    }
 
     setErrors(errors);
 

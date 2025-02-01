@@ -3,7 +3,7 @@ import {useState} from "react";
 import {wrapHandlerEnter} from "../../utils/functions.ts";
 import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
 import PasswordField from "../../utils/components/fields/PasswordField.tsx";
-import {validatePassword} from "../../utils/components/fields/validation.ts";
+import {validateNewPassword, validatePassword} from "../../utils/components/fields/validation.ts";
 import {EditUserCallback} from "./useSettings.ts";
 import PasswordStrengthBar from "../../utils/components/password/PasswordStrengthBar.tsx";
 import PasswordConfirmField from "../../utils/components/fields/PasswordConfirmField.tsx";
@@ -26,7 +26,8 @@ export default function EditPasswordModal({editUser}: EditPasswordModalProps) {
     const errors: FieldErrors = {};
 
     validatePassword(currentPassword, errors, "currentPassword");
-    validatePassword(newPassword, errors, "newPassword", confirmNewPassword, "confirmNewPassword");
+    validatePassword(newPassword, errors, "newPassword");
+    validateNewPassword(newPassword, confirmNewPassword, errors, "newPassword", "confirmNewPassword");
 
     setErrors(errors);
 
