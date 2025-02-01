@@ -1,0 +1,8 @@
+.warningNote {
+  border-left: 0.3rem solid var(--color-warning);
+  color: var(--color-warning);
+  padding-left: 1rem;
+  font-weight: bold;
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+}

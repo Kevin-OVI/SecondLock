@@ -9,6 +9,7 @@
   --color-surface: #393939;
   --color-surface-secondary: #2f2f2f;
   --nav-bar-height: 64px;
+  --color-warning: #f44336;
 }
 
 html, body, #root {
