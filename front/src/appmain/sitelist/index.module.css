@@ -27,25 +27,7 @@
 
 .accountName > div:nth-child(1) {
   overflow: hidden;
-}
-
-.editIcon {
-  display: flex;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-  width: 38px;
-  height: 38px;
-  flex-shrink: 0;
-  background: url("images/edit_icon.svg") center/cover;
-}
-
-.editIcon:hover {
-  background-color: rgba(128, 128, 128, 0.3);
-}
-
-.editIcon:active {
-  background-color: rgba(128, 128, 128, 0.5);
+  text-overflow: ellipsis;
 }
 
 @keyframes pulse {
@@ -78,16 +60,11 @@
 }
 
 .copyIcon {
-  display: flex;
-  width: 38px;
-  height: 38px;
-  background: url("images/clipboard_copy.svg") center/cover no-repeat;
-  background-size: 50%;
   opacity: 0;
-  transition: opacity 250ms ease;
+  transition: opacity 250ms ease !important;
 }
 
-.code:hover > .copyIcon {
+.code:hover .copyIcon {
   opacity: 0.5;
 }
 

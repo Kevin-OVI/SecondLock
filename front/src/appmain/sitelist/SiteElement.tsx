@@ -3,10 +3,12 @@ import {ACTION} from "../../utils/context/actionTypes";
 import AddOrEditSiteModal from "./AddOrEditSiteModal";
 import DeleteSiteModal, {SiteRemoveCallback} from "./DeleteSiteModal";
 import styles from "./index.module.css";
-import {Menu, MenuItem, Tooltip} from "@mui/material";
+import {IconButton, Menu, MenuItem, Tooltip} from "@mui/material";
 import PopupState, {bindMenu, bindTrigger, InjectedProps} from "material-ui-popup-state";
 import {SiteInputCallback} from "./AddSiteButtons.tsx";
 import useAppContext from "../../utils/context/useAppContext.ts";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export interface Site {
   id: number;
@@ -40,7 +42,9 @@ export default function SiteElement({site, handleRemoveSite, updateSiteCallback}
         <PopupState variant="popover">
           {(popupState: InjectedProps) => (
             <>
-              <div className={styles.editIcon} {...bindTrigger(popupState)} />
+              <IconButton {...bindTrigger(popupState)}>
+                <MoreHorizIcon/>
+              </IconButton>
 
               <Menu {...bindMenu(popupState)}>
                 <MenuItem
@@ -73,7 +77,9 @@ export default function SiteElement({site, handleRemoveSite, updateSiteCallback}
           <div>
             {site.code.substring(0, 3)} {site.code.substring(3)}
           </div>
-          <div className={styles.copyIcon}/>
+          <IconButton>
+            <ContentCopyIcon className={styles.copyIcon}/>
+          </IconButton>
         </div>
       </Tooltip>
     </div>
