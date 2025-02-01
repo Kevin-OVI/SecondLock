@@ -1,4 +1,4 @@
-import {Route, Routes, useNavigate} from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import SiteList from "./sitelist";
 import {AppBar, Container, IconButton, ListItemIcon, Menu, MenuItem, Toolbar, Tooltip} from "@mui/material";
 import styles from "./index.module.css";
@@ -10,13 +10,17 @@ import useAppContext from "../utils/context/useAppContext.ts";
 
 export default function Main() {
   const navigate = useNavigate();
-  const [{username}, dispatch] = useAppContext();
+  const [{username, token}, dispatch] = useAppContext();
+
+  if (!token) {
+    return <Navigate to="/login"/>;
+  }
 
   return <>
     <AppBar position="sticky" className={styles.navbar}>
       <Container maxWidth={false}>
         <Toolbar disableGutters sx={{display: "flex", justifyContent: "space-between"}}>
-          <img className={styles.logo} onClick={() => navigate("/")} src="/logo_full.svg" alt="Logo"/>
+          <img className={styles.logo} onClick={() => navigate("/app")} src="/logo_full.svg" alt="Logo"/>
 
           <PopupState variant="popover">
             {(popupState: InjectedProps) => (
@@ -29,7 +33,7 @@ export default function Main() {
 
                 <Menu {...bindMenu(popupState)}>
                   <MenuItem onClick={() => {
-                    navigate("/settings");
+                    navigate("/app/settings");
                     popupState.close();
                   }}>
                     <ListItemIcon>
@@ -55,7 +59,7 @@ export default function Main() {
     </AppBar>
 
     <Routes>
-      <Route path="/" element={<SiteList/>}/>
+      <Route path="" element={<SiteList/>}/>
       <Route path="settings" element={<Settings/>}/>
     </Routes>
   </>;

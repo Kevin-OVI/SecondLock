@@ -10,9 +10,10 @@ import {FieldErrors} from "../utils/types.ts";
 import PasswordConfirmField from "../utils/components/fields/PasswordConfirmField.tsx";
 import {validatePassword, validateUsername} from "../utils/components/fields/validation.ts";
 import useAppContext from "../utils/context/useAppContext.ts";
+import {Navigate} from "react-router-dom";
 
 export default function Login() {
-  const [{username: storedUsername, api}, dispatch] = useAppContext();
+  const [{username: storedUsername, api, token}, dispatch] = useAppContext();
 
   const [register, setRegister] = useState<boolean>(false);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
@@ -73,6 +74,10 @@ export default function Login() {
   }
 
   const handleEnter = wrapHandlerEnter(handleSubmit);
+
+  if (token) {
+    return <Navigate to="/app"/>
+  }
 
   return (
     <div className={styles.loginForm}>
