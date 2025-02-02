@@ -11,7 +11,7 @@ import pathlib
 import sys
 import traceback
 from types import ModuleType
-from typing import Any, Awaitable, Callable, Coroutine, Reversible, Sequence, TYPE_CHECKING
+from typing import Any, Awaitable, Callable, Coroutine, Reversible, Sequence, TYPE_CHECKING, TypeVar
 
 from aiohttp import web
 
@@ -271,6 +271,12 @@ class ModulesManager(AutoLogger):
             raise RuntimeError("No special module")
         return self._special_module
 
+    def get_module(self, module_class: type[T]) -> T:
+        for module in self.modules:
+            if isinstance(module, module_class):
+                return module
+        raise ValueError(f"No module of type {module_class.__name__} found")
+
 
 class ModuleStorage(AutoLogger):
     __slots__ = ()
@@ -323,3 +329,6 @@ class SpecialModule(BaseModule, abc.ABC):
 
     @abc.abstractmethod
     async def handle_request(self, request: CustomRequest) -> web.StreamResponse: pass
+
+
+T = TypeVar("T", bound=BaseModule)

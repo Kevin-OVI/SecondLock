@@ -16,8 +16,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from core_utilities import CustomHTTPException, HTTPStatus, CustomRequest
-from ..utils import fix_base64_padding, NS_MULTIPLIER
-from ..utils.debugging import time_async_function
+from modules.utils import fix_base64_padding, NS_MULTIPLIER
+from modules.utils.debugging import time_async_function
 
 __all__ = ("DUMMY_HASH", "gen_bcrypt", "check_bcrypt", "raise_invalid_token", "TokenEncryptorManager", "Token")
 
