@@ -7,14 +7,15 @@ import importlib
 import json
 import logging
 import os
+import pathlib
 import sys
 import traceback
 from types import ModuleType
-from typing import TYPE_CHECKING, Sequence, Callable, Coroutine, Any, Iterable, Awaitable
+from typing import Any, Awaitable, Callable, Coroutine, Reversible, Sequence, TYPE_CHECKING
 
 from aiohttp import web
 
-from core_utilities import Counter, AutoLogger, SiteHost, frozen_partial
+from core_utilities import AutoLogger, Counter, SiteHost, frozen_partial
 from core_utilities.functions import ainput
 
 MODULES_DIR = "modules"
@@ -32,22 +33,50 @@ def load_config(config_file) -> dict:
 
 
 def scan_modules() -> list[str]:
-    priority_load: dict[int, list[str]] = {}
+    by_dependencies: dict[str, set[str]] = {}
 
     main_config = load_config(os.path.join(MODULES_DIR, CONFIG_FILE_NAME))
     ignore = set(main_config.get("ignore", []))
 
-    for item in os.listdir(MODULES_DIR):
-        item_path = os.path.join("modules", item)
-        if item != "__pycache__" and item not in ignore and os.path.isdir(item_path):
-            config = load_config(os.path.join(item_path, CONFIG_FILE_NAME))
-            priority = config.get("sort_order", 0)
+    stack: list[pathlib.Path] = [pathlib.Path(MODULES_DIR)]
 
-            priority_load.setdefault(priority, []).append(item)
+    while stack:
+        current_dir = stack.pop()
+        for item in os.listdir(current_dir):
+            if item == "__pycache__":
+                continue
+
+            item_path = current_dir.joinpath(item)
+            item_id = item_path.relative_to(MODULES_DIR).as_posix().replace("/", ".")
+            if item_id in ignore or not item_path.is_dir():
+                continue
+
+            if item_path.joinpath("__init__.py").exists():
+                config = load_config(item_path.joinpath(CONFIG_FILE_NAME))
+                dependencies = config.get("dependencies")
+                if dependencies:
+                    by_dependencies[item_id] = set(dependencies)
+                else:
+                    by_dependencies[item_id] = set()
+            else:
+                stack.append(item_path)
 
     flattened_list = []
-    for _, modules in sorted(priority_load.items(), key=lambda x: x[0]):
-        flattened_list.extend(modules)
+
+    while by_dependencies:
+        loaded_from_pass = []
+        for module, dependencies in by_dependencies.items():
+            if not dependencies:
+                loaded_from_pass.append(module)
+                for _, deps in by_dependencies.items():
+                    deps.discard(module)
+        if loaded_from_pass:
+            flattened_list.extend(loaded_from_pass)
+            for module in loaded_from_pass:
+                del by_dependencies[module]
+        else:
+            raise RuntimeError(f"Circular dependencies detected : {by_dependencies}")
+
     return flattened_list
 
 
@@ -125,10 +154,10 @@ class ModulesManager(AutoLogger):
             except ExceptionGroup:
                 traceback.print_exc()
 
-    async def _call_unload(self, modules: Iterable[BaseModule]):
+    async def _call_unload(self, modules: Reversible[BaseModule]):
         try:
             async with asyncio.TaskGroup() as tg:
-                for module in modules:
+                for module in reversed(modules):
                     tg.create_task(module.on_unload()).add_done_callback(frozen_partial(self.logger.debug,
                         "Unloaded %s", f"{module.__module__}.{module.__class__.__name__}"))
         except ExceptionGroup:
