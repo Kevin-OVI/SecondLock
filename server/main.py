@@ -12,9 +12,15 @@ from core_utilities.functions import ainput
 from logger import DayFileHandler
 from web_server import WebApplication
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format="[%(asctime)s %(levelname)s]: [%(name)s] %(message)s",
-        handlers=(logging.StreamHandler(sys.stdout), DayFileHandler("logs", logging.INFO)))
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(asctime)s %(levelname)s]: [%(name)s] %(message)s",
+        handlers=(
+            logging.StreamHandler(sys.stdout),
+            DayFileHandler("logs", logging.INFO),
+        ),
+    )
     loop = asyncio.new_event_loop()
 
     modules_manager = module_loader.ModulesManager()
@@ -31,15 +37,15 @@ if __name__ == '__main__':
         servers.append(app.run("0.0.0.0", HTTPS_PORT, ssl_context))
         servers.append(app.run("::", HTTPS_PORT, ssl_context))
 
-    app_run_tasks: tuple[asyncio.Task[None], ...] = tuple(loop.create_task(x) for x in servers)
-
+    app_run_tasks: tuple[asyncio.Task[None], ...] = tuple(
+        loop.create_task(x) for x in servers
+    )
 
     async def runner():
         try:
             await modules_manager.load_modules()
         except Exception as e:
-            logging.critical(
-                "Exception occured while loading modules", exc_info=e)
+            logging.critical("Exception occured while loading modules", exc_info=e)
             logging.critical("Continue running ? (y/N)")
             while True:
                 inp = (await ainput("> ")).strip().upper()
@@ -47,6 +53,7 @@ if __name__ == '__main__':
                     break
                 if inp == "N" or not inp:
                     from aiohttp.web_runner import GracefulExit
+
                     raise GracefulExit from None
                 logging.critical("Unknown option. Choose Yes (Y) or No (N)")
         modules_manager.ready.set()
@@ -58,7 +65,6 @@ if __name__ == '__main__':
         finally:
             await modules_manager.unload()
             await modules_manager.dispatch_event("stop")
-
 
     main_task = loop.create_task(runner())
     try:

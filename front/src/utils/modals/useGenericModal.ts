@@ -1,4 +1,4 @@
-import {useState, Dispatch, SetStateAction} from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 
 interface UseGenericModalRet {
   open: boolean;
@@ -8,5 +8,5 @@ interface UseGenericModalRet {
 export default function useGenericModal(): UseGenericModalRet {
   const [open, setOpen] = useState<boolean>(true);
 
-  return {open, setOpen};
+  return { open, setOpen };
 }

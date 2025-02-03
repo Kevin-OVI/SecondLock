@@ -21,7 +21,7 @@ DEFAULT_CSP = {
     "font-src": ["'self'", "fonts.gstatic.com"],
     "frame-ancestors": ["'self'"],
     "form-action": ["'self'"],
-    "media-src": ["'self'"]
+    "media-src": ["'self'"],
 }
 
 
@@ -30,7 +30,8 @@ def create_headers(_: CustomRequest, content_type: str) -> dict[str, str]:
 
     csp = copy.deepcopy(DEFAULT_CSP)
     res_headers["Content-Security-Policy"] = "; ".join(
-        f"{key} {' '.join(value)}" for key, value in csp.items())
+        f"{key} {' '.join(value)}" for key, value in csp.items()
+    )
     res_headers[hdrs.CACHE_CONTROL] = "no-cache"
     res_headers["X-Content-Type-Options"] = "nosniff"
 
@@ -48,7 +49,11 @@ class HTMLModule(HTTPModule):
             raise CustomHTTPException(HTTPStatus.NOT_FOUND, "File Not Found")
 
         if os.path.exists(translated_path):
-            return FileResponse(path=translated_path, status=HTTPStatus.OK, headers=create_headers(request, guess_type(translated_path)))
+            return FileResponse(
+                path=translated_path,
+                status=HTTPStatus.OK,
+                headers=create_headers(request, guess_type(translated_path)),
+            )
         else:
             raise CustomHTTPException(HTTPStatus.NOT_FOUND, "File Not Found")
 

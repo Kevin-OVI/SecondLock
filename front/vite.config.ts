@@ -1,7 +1,7 @@
-import {defineConfig} from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-const ReactCompilerConfig = {}
+const ReactCompilerConfig = {};
 
 // https://vite.dev/config/
 export default defineConfig({

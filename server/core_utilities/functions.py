@@ -7,7 +7,15 @@ from typing import MutableMapping, MutableSequence, Any
 
 import pytz
 
-__all__ = ("LOCAL_TIMEZONE", "cancel_tasks", "silent_delitem", "silent_remove", "frozen_partial", "local_now", "ainput")
+__all__ = (
+    "LOCAL_TIMEZONE",
+    "cancel_tasks",
+    "silent_delitem",
+    "silent_remove",
+    "frozen_partial",
+    "local_now",
+    "ainput",
+)
 LOCAL_TIMEZONE = pytz.timezone("Europe/Paris")
 
 

@@ -1,7 +1,7 @@
-import {ReactElement, ReactNode, useEffect, useReducer} from "react";
-import {ACTION} from "./actionTypes.ts";
-import {Action, AppContextProps, Context} from "./Context.ts";
-import {API} from "./api.ts";
+import { ReactElement, ReactNode, useEffect, useReducer } from "react";
+import { ACTION } from "./actionTypes.ts";
+import { Action, AppContextProps, Context } from "./Context.ts";
+import { API } from "./api.ts";
 
 const initialState: AppContextProps = {
   username: localStorage.username,
@@ -12,13 +12,17 @@ const initialState: AppContextProps = {
 const reducer = (state: AppContextProps, action: Action): AppContextProps => {
   switch (action.type) {
     case ACTION.LOAD_SESSION:
-      state = {...state, username: action.payload.username, token: action.payload.token};
+      state = {
+        ...state,
+        username: action.payload.username,
+        token: action.payload.token,
+      };
       break;
     case ACTION.DISCONNECT:
-      state = {...state, token: undefined, displayedModal: undefined};
+      state = { ...state, token: undefined, displayedModal: undefined };
       break;
     case ACTION.DISPLAY_MODAL:
-      state = {...state, displayedModal: action.payload};
+      state = { ...state, displayedModal: action.payload };
       break;
   }
 
@@ -29,7 +33,9 @@ interface ContextProviderProps {
   children: ReactNode;
 }
 
-export function ContextProvider({children}: ContextProviderProps): ReactElement {
+export function ContextProvider({
+  children,
+}: ContextProviderProps): ReactElement {
   const [state, dispatch] = useReducer(reducer, initialState);
   state.api.context = state;
   state.api.dispatch = dispatch;
@@ -48,5 +54,7 @@ export function ContextProvider({children}: ContextProviderProps): ReactElement 
     else delete localStorage.username;
   }, [state]); // Only re-run the effect if cart changes
 
-  return <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>
+  );
 }

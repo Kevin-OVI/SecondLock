@@ -1,11 +1,11 @@
-import {TextField, TextFieldProps} from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 import genericStyles from "../../styles/generic.module.css";
 
 type TextInputProps = {
   error?: string;
-} & Omit<TextFieldProps, "error">
+} & Omit<TextFieldProps, "error">;
 
-export default function TextInput({error, ...props}: TextInputProps) {
+export default function TextInput({ error, ...props }: TextInputProps) {
   return (
     <div>
       {error && <p className={genericStyles.error}>{error}</p>}

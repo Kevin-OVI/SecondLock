@@ -12,7 +12,9 @@
   --color-warning: #f44336;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 

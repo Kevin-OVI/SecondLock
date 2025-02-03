@@ -7,7 +7,14 @@ import traceback
 import weakref
 from typing import Callable, Any, Coroutine, Type
 
-__all__ = ("AutoLogger", "TaskLoop", "AsyncContextManagerMixin", "ContextManagerMixin", "Counter", "SiteHost")
+__all__ = (
+    "AutoLogger",
+    "TaskLoop",
+    "AsyncContextManagerMixin",
+    "ContextManagerMixin",
+    "Counter",
+    "SiteHost",
+)
 
 
 class AutoLogger:
@@ -90,7 +97,11 @@ class TaskLoop(abc.ABC):
 class _InstanceTaskLoop(TaskLoop):
     __slots__ = ("_func_ref",)
 
-    def __init__(self, delay: float, _func_ref: weakref.WeakMethod[Callable[[Any, ...], Coroutine]]):
+    def __init__(
+        self,
+        delay: float,
+        _func_ref: weakref.WeakMethod[Callable[[Any, ...], Coroutine]],
+    ):
         super().__init__(delay)
         self._func_ref = _func_ref
 
@@ -100,7 +111,10 @@ class _InstanceTaskLoop(TaskLoop):
 
 
 class _DescriptorTaskLoop(TaskLoop):
-    __slots__ = ("_func", "_instance_refs",)
+    __slots__ = (
+        "_func",
+        "_instance_refs",
+    )
 
     def __init__(self, delay: float, func: Callable[..., Coroutine]):
         super().__init__(delay)
@@ -129,10 +143,12 @@ class AsyncContextManagerMixin(abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    async def acquire(self): pass
+    async def acquire(self):
+        pass
 
     @abc.abstractmethod
-    async def release(self): pass
+    async def release(self):
+        pass
 
     async def __aenter__(self):
         return await self.acquire()
@@ -145,10 +161,12 @@ class ContextManagerMixin(abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    def acquire(self): pass
+    def acquire(self):
+        pass
 
     @abc.abstractmethod
-    def release(self): pass
+    def release(self):
+        pass
 
     def __enter__(self):
         return self.acquire()

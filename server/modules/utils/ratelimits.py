@@ -12,7 +12,15 @@ from module_loader import HTTPModule
 from types_ import REQUEST_HANDLER_FUNC
 from .types import CHECK_RATELIMIT_FUNCTIONS
 
-__all__ = ("RateLimitCheckerBase", "RateLimitChecker", "RateLimitCheckerGroup", "RateLimitWrapper", "basic_ip_ratelimit", "check_ratelimit", "ip_lock")
+__all__ = (
+    "RateLimitCheckerBase",
+    "RateLimitChecker",
+    "RateLimitCheckerGroup",
+    "RateLimitWrapper",
+    "basic_ip_ratelimit",
+    "check_ratelimit",
+    "ip_lock",
+)
 
 
 class RateLimitCheckerBase(ABC):
@@ -38,7 +46,10 @@ class RateLimitChecker(RateLimitCheckerBase):
         if asyncio.iscoroutine(limit):
             limit = await limit
         if limit:
-            raise CustomHTTPException(HTTPStatus.TOO_MANY_REQUESTS, headers={"Retry-After": f"{max(1, math.ceil(limit))}"})
+            raise CustomHTTPException(
+                HTTPStatus.TOO_MANY_REQUESTS,
+                headers={"Retry-After": f"{max(1, math.ceil(limit))}"},
+            )
 
     async def count_request(self, module: HTTPModule, request: CustomRequest):
         self._counter(module, request)
@@ -92,7 +103,11 @@ def basic_ip_ratelimit(limit: int, reset: float) -> CHECK_RATELIMIT_FUNCTIONS:
         else:
             reset_at, calls = entry
             calls += 1
-        request.attached.setdefault("ratelimits", {})[predicate] = (reset_at, calls, entry is None)
+        request.attached.setdefault("ratelimits", {})[predicate] = (
+            reset_at,
+            calls,
+            entry is None,
+        )
         if calls > limit:
             return reset_at - loop.time()
         return 0
@@ -107,7 +122,9 @@ def basic_ip_ratelimit(limit: int, reset: float) -> CHECK_RATELIMIT_FUNCTIONS:
     return predicate, counter
 
 
-def check_ratelimit(predicate: CHECK_RATELIMIT_FUNCTIONS) -> Callable[[REQUEST_HANDLER_FUNC], RateLimitWrapper]:
+def check_ratelimit(
+    predicate: CHECK_RATELIMIT_FUNCTIONS,
+) -> Callable[[REQUEST_HANDLER_FUNC], RateLimitWrapper]:
     def deco(func: REQUEST_HANDLER_FUNC) -> RateLimitWrapper:
         return RateLimitWrapper(func, RateLimitChecker(predicate))
 

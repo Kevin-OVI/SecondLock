@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { Action, AppContextProps } from "./Context.ts";
 import { ACTION } from "./actionTypes";
-import {JSONType} from "../types.ts";
+import { JSONType } from "../types.ts";
 
 type HttpHeaders = {
   [key: string]: string;
@@ -38,17 +38,24 @@ export class API {
     return false;
   }
 
-  async fetchAPI(method: string, endpoint: string, params?: APIFetchParams): Promise<APIResponse> {
+  async fetchAPI(
+    method: string,
+    endpoint: string,
+    params?: APIFetchParams,
+  ): Promise<APIResponse> {
     const token = this.context?.token;
     const url = import.meta.env.VITE_APP_API_BASE + endpoint;
 
     const headers: HttpHeaders = {};
-    const d: { method: string; body?: string; headers: HttpHeaders } = { method, headers };
+    const d: { method: string; body?: string; headers: HttpHeaders } = {
+      method,
+      headers,
+    };
 
     if (token) {
       headers["Authorization"] = token;
     }
-  
+
     if (params) {
       if (params.json) {
         d.body = JSON.stringify(params.json);
@@ -74,7 +81,11 @@ export class API {
     return { status: response.status, json: json, text: text };
   }
 
-  async fetchAPIRaiseStatus(method: string, endpoint: string, params?: APIFetchParams): Promise<APIResponse | null> {
+  async fetchAPIRaiseStatus(
+    method: string,
+    endpoint: string,
+    params?: APIFetchParams,
+  ): Promise<APIResponse | null> {
     let apiResponse;
     try {
       apiResponse = await this.fetchAPI(method, endpoint, params);

@@ -11,7 +11,16 @@ import pathlib
 import sys
 import traceback
 from types import ModuleType
-from typing import Any, Awaitable, Callable, Coroutine, Reversible, Sequence, TYPE_CHECKING, TypeVar
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Coroutine,
+    Reversible,
+    Sequence,
+    TYPE_CHECKING,
+    TypeVar,
+)
 
 from aiohttp import web
 
@@ -81,7 +90,15 @@ def scan_modules() -> list[str]:
 
 
 class ModulesManager(AutoLogger):
-    __slots__ = ("ready", "requests_counter", "libs", "events", "pre_handlers", "modules", "_special_module")
+    __slots__ = (
+        "ready",
+        "requests_counter",
+        "libs",
+        "events",
+        "pre_handlers",
+        "modules",
+        "_special_module",
+    )
 
     if TYPE_CHECKING:
         libs: list[tuple[str, ModuleType]]
@@ -112,7 +129,9 @@ class ModulesManager(AutoLogger):
             else:
                 self.logger.debug(f"Loaded {name}")
         if exceptions:
-            raise ExceptionGroup("Exception(s) occured during initialising modules", exceptions)
+            raise ExceptionGroup(
+                "Exception(s) occured during initialising modules", exceptions
+            )
         if self._special_module is None:
             raise RuntimeError("No special module loaded")
 
@@ -127,7 +146,9 @@ class ModulesManager(AutoLogger):
         await self._initialise_modules()
 
     def _try_add_routes(self, extras: dict[str, Any], attr: str, value):
-        routes: list[tuple[Sequence[str], str]] | None = getattr(value, "__routes__", None)
+        routes: list[tuple[Sequence[str], str]] | None = getattr(
+            value, "__routes__", None
+        )
         if routes is None:
             return
 
@@ -139,13 +160,17 @@ class ModulesManager(AutoLogger):
             return
 
         for event_name, priority in events.items():
-            self.events.setdefault(event_name, {}).setdefault(priority, []).append(value)
+            self.events.setdefault(event_name, {}).setdefault(priority, []).append(
+                value
+            )
 
     async def dispatch_event(self, event_name: str, *args, **kwargs):
         functions_by_priority = self.events.get(event_name, None)
         if functions_by_priority is None:
             return
-        for _, function_list in sorted(functions_by_priority.items(), key=lambda x: x[0]):
+        for _, function_list in sorted(
+            functions_by_priority.items(), key=lambda x: x[0]
+        ):
             # noinspection PyBroadException
             try:
                 async with asyncio.TaskGroup() as tg:
@@ -158,8 +183,13 @@ class ModulesManager(AutoLogger):
         try:
             async with asyncio.TaskGroup() as tg:
                 for module in reversed(modules):
-                    tg.create_task(module.on_unload()).add_done_callback(frozen_partial(self.logger.debug,
-                        "Unloaded %s", f"{module.__module__}.{module.__class__.__name__}"))
+                    tg.create_task(module.on_unload()).add_done_callback(
+                        frozen_partial(
+                            self.logger.debug,
+                            "Unloaded %s",
+                            f"{module.__module__}.{module.__class__.__name__}",
+                        )
+                    )
         except ExceptionGroup:
             traceback.print_exc()
 
@@ -197,7 +227,10 @@ class ModulesManager(AutoLogger):
         try:
             await self.load_modules()
         except Exception as e:
-            self.logger.exception(f"Error occured, unloading partially loaded modules and restoring saved data...", exc_info=e)
+            self.logger.exception(
+                f"Error occured, unloading partially loaded modules and restoring saved data...",
+                exc_info=e,
+            )
             await self._call_unload(self.modules)
             self._clear_data()
             remove = []
@@ -212,7 +245,10 @@ class ModulesManager(AutoLogger):
             try:
                 await self._initialise_modules()
             except Exception as e:
-                self.logger.critical("Error occured whilst re-initializing old librairies, server might be in a very broken state.", exc_info=e)
+                self.logger.critical(
+                    "Error occured whilst re-initializing old librairies, server might be in a very broken state.",
+                    exc_info=e,
+                )
                 self.logger.critical("Continue running ? (y/N)")
                 while True:
                     inp = (await ainput("> ")).strip().upper()
@@ -220,6 +256,7 @@ class ModulesManager(AutoLogger):
                         break
                     if inp == "N" or not inp:
                         from aiohttp.web_runner import GracefulExit
+
                         raise GracefulExit from None
                     self.logger.critical("Unknown option. Choose Yes (Y) or No (N)")
             else:
@@ -232,7 +269,9 @@ class ModulesManager(AutoLogger):
     def reload(self):
         asyncio.create_task(self._reload())
 
-    def add_module_base(self, module: BaseModule, *attribute_registerers: Callable[[str, Any], Any]):
+    def add_module_base(
+        self, module: BaseModule, *attribute_registerers: Callable[[str, Any], Any]
+    ):
         self.modules.append(module)
         module_class = type(module)
         for attr in dir(module_class):
@@ -310,7 +349,9 @@ class PreHandlerModule(BaseModule):
     async def handle_request(self, request: CustomRequest) -> web.StreamResponse | None:
         pass
 
-    async def handle_response(self, request: CustomRequest, response: web.StreamResponse) -> None:
+    async def handle_response(
+        self, request: CustomRequest, response: web.StreamResponse
+    ) -> None:
         pass
 
 
@@ -318,17 +359,28 @@ class SpecialModule(BaseModule, abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    def on_add_http_routes(self, attr: str, value: Callable[[CustomRequest], Awaitable[web.StreamResponse]],
-            routes: list[tuple[Sequence[str], str]], extras: dict[str, Any]): pass
+    def on_add_http_routes(
+        self,
+        attr: str,
+        value: Callable[[CustomRequest], Awaitable[web.StreamResponse]],
+        routes: list[tuple[Sequence[str], str]],
+        extras: dict[str, Any],
+    ):
+        pass
 
     @abc.abstractmethod
-    def get_sitehost(self, request: CustomRequest) -> SiteHost | None: pass
+    def get_sitehost(self, request: CustomRequest) -> SiteHost | None:
+        pass
 
     @abc.abstractmethod
-    async def create_exception_response(self, request: CustomRequest, http_exception: CustomHTTPException) -> web.StreamResponse: pass
+    async def create_exception_response(
+        self, request: CustomRequest, http_exception: CustomHTTPException
+    ) -> web.StreamResponse:
+        pass
 
     @abc.abstractmethod
-    async def handle_request(self, request: CustomRequest) -> web.StreamResponse: pass
+    async def handle_request(self, request: CustomRequest) -> web.StreamResponse:
+        pass
 
 
 T = TypeVar("T", bound=BaseModule)

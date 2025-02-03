@@ -21,7 +21,8 @@
   align-items: flex-start;
 }
 
-.actions h2, .actions p {
+.actions h2,
+.actions p {
   margin: 0;
 }
 

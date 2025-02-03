@@ -1,28 +1,34 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
-import {AddSiteButtons, InputSite} from "./AddSiteButtons.tsx";
-import SiteElement, {Site} from "./SiteElement.tsx";
-import {CircularProgress} from "@mui/material";
-import {FieldErrors} from "../../utils/types.ts";
+import { AddSiteButtons, InputSite } from "./AddSiteButtons.tsx";
+import SiteElement, { Site } from "./SiteElement.tsx";
+import { CircularProgress } from "@mui/material";
+import { FieldErrors } from "../../utils/types.ts";
 import useAppContext from "../../utils/context/useAppContext.ts";
 
 function SiteListLoading() {
-  return <div className={styles.listContentMessage}>
-    <CircularProgress/>
-  </div>;
+  return (
+    <div className={styles.listContentMessage}>
+      <CircularProgress />
+    </div>
+  );
 }
 
 function SiteListEmpty() {
-  return <div className={styles.listContentMessage}>
-    <div>
-      <h2>Bienvenue sur SecondLock</h2>
-      <p>Ajoutez votre premier compte en utilisant le bouton en bas à droite</p>
+  return (
+    <div className={styles.listContentMessage}>
+      <div>
+        <h2>Bienvenue sur SecondLock</h2>
+        <p>
+          Ajoutez votre premier compte en utilisant le bouton en bas à droite
+        </p>
+      </div>
     </div>
-  </div>;
+  );
 }
 
 export default function SiteList() {
-  const [{api}] = useAppContext();
+  const [{ api }] = useAppContext();
   const [sites, setSites] = useState<Site[]>();
   const [nextUpdateAt, setNextUpdateAt] = useState<number | null>(0);
   const refreshAnimationRef = useRef<HTMLDivElement>(null);
@@ -54,15 +60,22 @@ export default function SiteList() {
     });
   }
 
-  async function handleCreateOrUpdateSite({id, name, secret}: InputSite, errors: FieldErrors): Promise<boolean> {
+  async function handleCreateOrUpdateSite(
+    { id, name, secret }: InputSite,
+    errors: FieldErrors,
+  ): Promise<boolean> {
     const res = id
-      ? await api.fetchAPIRaiseStatus("PATCH", `/sites/${id}`, {json: {name, secret}})
-      : await api.fetchAPIRaiseStatus("POST", "/sites", {json: {name, secret}});
+      ? await api.fetchAPIRaiseStatus("PATCH", `/sites/${id}`, {
+          json: { name, secret },
+        })
+      : await api.fetchAPIRaiseStatus("POST", "/sites", {
+          json: { name, secret },
+        });
 
     if (!res) return false;
 
     if (res.status === 200 || res.status === 201) {
-      const {next_update: nextUpdate, ...site} = res.json;
+      const { next_update: nextUpdate, ...site } = res.json;
       if (id) updateExistingSite(site);
       else addNewSite(site);
       setNextUpdateAt(new Date().getTime() + Math.round(nextUpdate * 1000));
@@ -81,7 +94,10 @@ export default function SiteList() {
     if (!res) return null;
 
     if (res.status === 200) {
-      const {sites, next_update: nextUpdate}: { sites: Site[]; next_update: number } = res.json;
+      const {
+        sites,
+        next_update: nextUpdate,
+      }: { sites: Site[]; next_update: number } = res.json;
       setSites(sites);
       return Math.round(nextUpdate * 1000);
     } else {
@@ -121,10 +137,13 @@ export default function SiteList() {
     let animation: Animation | null = null;
 
     if (refreshAnimationRef.current) {
-      animation = refreshAnimationRef.current.animate([{inset: "0 100% 0 0"}, {inset: "0"}], {
-        duration: 30000,
-        fill: "forwards",
-      });
+      animation = refreshAnimationRef.current.animate(
+        [{ inset: "0 100% 0 0" }, { inset: "0" }],
+        {
+          duration: 30000,
+          fill: "forwards",
+        },
+      );
       animation.currentTime = 30000 - (nextUpdateAt - now);
     }
 
@@ -146,18 +165,23 @@ export default function SiteList() {
             </div>
             <div className={styles.accountList}>
               {sites.map((site) => (
-                <SiteElement key={`${site.id}`} site={site} handleRemoveSite={handleRemoveSite} updateSiteCallback={handleCreateOrUpdateSite}/>
+                <SiteElement
+                  key={`${site.id}`}
+                  site={site}
+                  handleRemoveSite={handleRemoveSite}
+                  updateSiteCallback={handleCreateOrUpdateSite}
+                />
               ))}
             </div>
           </>
         ) : (
-          <SiteListEmpty/>
+          <SiteListEmpty />
         )
       ) : (
-        <SiteListLoading/>
+        <SiteListLoading />
       )}
 
-      <AddSiteButtons callback={handleCreateOrUpdateSite}/>
+      <AddSiteButtons callback={handleCreateOrUpdateSite} />
     </>
   );
 }

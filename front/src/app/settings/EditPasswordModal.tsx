@@ -1,20 +1,23 @@
 import GenericModal from "../../utils/modals/GenericModal.tsx";
-import {useState} from "react";
-import {wrapHandlerEnter} from "../../utils/functions.ts";
-import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
+import { useState } from "react";
+import { wrapHandlerEnter } from "../../utils/functions.ts";
+import { FieldErrors, ModalButtonsState } from "../../utils/types.ts";
 import PasswordField from "../../utils/components/fields/PasswordField.tsx";
-import {validateNewPassword, validatePassword} from "../../utils/components/fields/validation.ts";
-import {EditUserCallback} from "./useSettings.ts";
+import {
+  validateNewPassword,
+  validatePassword,
+} from "../../utils/components/fields/validation.ts";
+import { EditUserCallback } from "./useSettings.ts";
 import PasswordStrengthBar from "../../utils/components/password/PasswordStrengthBar.tsx";
 import PasswordConfirmField from "../../utils/components/fields/PasswordConfirmField.tsx";
-
 
 interface EditPasswordModalProps {
   editUser: EditUserCallback;
 }
 
-
-export default function EditPasswordModal({editUser}: EditPasswordModalProps) {
+export default function EditPasswordModal({
+  editUser,
+}: EditPasswordModalProps) {
   const [open, setOpen] = useState(true);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [currentPassword, setCurrentPassword] = useState<string>("");
@@ -27,7 +30,13 @@ export default function EditPasswordModal({editUser}: EditPasswordModalProps) {
 
     validatePassword(currentPassword, errors, "currentPassword");
     validatePassword(newPassword, errors, "newPassword");
-    validateNewPassword(newPassword, confirmNewPassword, errors, "newPassword", "confirmNewPassword");
+    validateNewPassword(
+      newPassword,
+      confirmNewPassword,
+      errors,
+      "newPassword",
+      "confirmNewPassword",
+    );
 
     setErrors(errors);
 
@@ -47,7 +56,7 @@ export default function EditPasswordModal({editUser}: EditPasswordModalProps) {
 
       const errors: FieldErrors = {};
 
-      if (await editUser({newPassword}, currentPassword, errors)) {
+      if (await editUser({ newPassword }, currentPassword, errors)) {
         setOpen(false);
       } else {
         setErrors(errors);
@@ -59,41 +68,45 @@ export default function EditPasswordModal({editUser}: EditPasswordModalProps) {
 
   const handleEnter = wrapHandlerEnter(handleValidate);
 
-  return <GenericModal
-    title="Modifier le mot de passe"
-    exitOnClick={false}
-    open={open}
-    setOpen={setOpen}
-    onValidate={handleValidate}
-    buttonsState={buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT}
-  >
-    <PasswordField
-      label="Mot de passe actuel"
-      name="currentPassword"
-      password={currentPassword}
-      setPassword={setCurrentPassword}
-      onKeyDown={handleEnter}
-      errors={errors}
-      setErrors={setErrors}
-    />
-    <PasswordField
-      label="Nouveau mot de passe"
-      name="newPassword"
-      password={newPassword}
-      setPassword={setNewPassword}
-      onKeyDown={handleEnter}
-      errors={errors}
-      setErrors={setErrors}
-    />
-    <PasswordStrengthBar password={newPassword}/>
-    <PasswordConfirmField
-      label="Confirmer le nouveau mot de passe"
-      name="confirmNewPassword"
-      passwordConfirm={confirmNewPassword}
-      setPasswordConfirm={setConfirmNewPassword}
-      onKeyDown={handleEnter}
-      errors={errors}
-      setErrors={setErrors}
-    />
-  </GenericModal>;
+  return (
+    <GenericModal
+      title="Modifier le mot de passe"
+      exitOnClick={false}
+      open={open}
+      setOpen={setOpen}
+      onValidate={handleValidate}
+      buttonsState={
+        buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT
+      }
+    >
+      <PasswordField
+        label="Mot de passe actuel"
+        name="currentPassword"
+        password={currentPassword}
+        setPassword={setCurrentPassword}
+        onKeyDown={handleEnter}
+        errors={errors}
+        setErrors={setErrors}
+      />
+      <PasswordField
+        label="Nouveau mot de passe"
+        name="newPassword"
+        password={newPassword}
+        setPassword={setNewPassword}
+        onKeyDown={handleEnter}
+        errors={errors}
+        setErrors={setErrors}
+      />
+      <PasswordStrengthBar password={newPassword} />
+      <PasswordConfirmField
+        label="Confirmer le nouveau mot de passe"
+        name="confirmNewPassword"
+        passwordConfirm={confirmNewPassword}
+        setPasswordConfirm={setConfirmNewPassword}
+        onKeyDown={handleEnter}
+        errors={errors}
+        setErrors={setErrors}
+      />
+    </GenericModal>
+  );
 }

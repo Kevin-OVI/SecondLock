@@ -13,8 +13,12 @@ class APICoreModule(HTTPModule):
 
         self.db = sqlite3.connect("database.db")
         with self.db:
-            self.db.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, passhash BLOB)")
-            self.db.execute("CREATE TABLE IF NOT EXISTS sites (id INTEGER PRIMARY KEY AUTOINCREMENT, user INT, name BLOB, secret BLOB, FOREIGN KEY(user) REFERENCES users(id))")
+            self.db.execute(
+                "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, passhash BLOB)"
+            )
+            self.db.execute(
+                "CREATE TABLE IF NOT EXISTS sites (id INTEGER PRIMARY KEY AUTOINCREMENT, user INT, name BLOB, secret BLOB, FOREIGN KEY(user) REFERENCES users(id))"
+            )
             self.db.execute("CREATE INDEX IF NOT EXISTS idx_sites_user ON sites (user)")
 
         self.token_encryptor_manager = TokenEncryptorManager(10 * 60, 3, "2FA")
@@ -22,16 +26,22 @@ class APICoreModule(HTTPModule):
     async def on_unload(self):
         self.db.close()
 
-    def check_authorization_advanced(self, request: CustomRequest) -> tuple[Token, tuple[str, bytes]]:
+    def check_authorization_advanced(
+        self, request: CustomRequest
+    ) -> tuple[Token, tuple[str, bytes]]:
         token = self.token_encryptor_manager.get_token(request)
-        res = self.db.execute("SELECT username, passhash FROM users WHERE id=?", (token.user_id,)).fetchone()
+        res = self.db.execute(
+            "SELECT username, passhash FROM users WHERE id=?", (token.user_id,)
+        ).fetchone()
         if res is None:
             raise_invalid_token()
         return token, res
 
     def check_authorization(self, request: CustomRequest) -> Token:
         token = self.token_encryptor_manager.get_token(request)
-        if not self.db.execute("SELECT ? IN (SELECT id FROM users)", (token.user_id,)).fetchone()[0]:
+        if not self.db.execute(
+            "SELECT ? IN (SELECT id FROM users)", (token.user_id,)
+        ).fetchone()[0]:
             raise_invalid_token()
         return token
 

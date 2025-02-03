@@ -6,7 +6,13 @@ from aiohttp import web, web_urldispatcher, hdrs
 
 from config import DOMAINS, DEV_ENV
 from decorators import route
-from core_utilities import SiteHost, CustomRequest, CustomHTTPException, silent_delitem, HTTPStatus
+from core_utilities import (
+    SiteHost,
+    CustomRequest,
+    CustomHTTPException,
+    silent_delitem,
+    HTTPStatus,
+)
 from module_loader import ModulesManager, SpecialModule, HTTPModule, PreHandlerModule
 from ..utils import is_api_path
 
@@ -19,8 +25,13 @@ class SpecialHandlerModule(SpecialModule):
     def __init__(self):
         self.routers: dict[SiteHost, web_urldispatcher.UrlDispatcher] = {}
 
-    def on_add_http_routes(self, attr: str, value: Callable[[CustomRequest], Awaitable[web.StreamResponse]],
-            routes: list[tuple[Sequence[str], str]], extras: dict[str, Any]):
+    def on_add_http_routes(
+        self,
+        attr: str,
+        value: Callable[[CustomRequest], Awaitable[web.StreamResponse]],
+        routes: list[tuple[Sequence[str], str]],
+        extras: dict[str, Any],
+    ):
         site_host: SiteHost = extras.get("site_host", SITEHOST_MAIN)
         router = self.routers.get(site_host)
         if router is None:
@@ -39,7 +50,9 @@ class SpecialHandlerModule(SpecialModule):
                 return site_host
         return None
 
-    async def create_exception_response(self, request: CustomRequest, http_exception: CustomHTTPException) -> web.StreamResponse:
+    async def create_exception_response(
+        self, request: CustomRequest, http_exception: CustomHTTPException
+    ) -> web.StreamResponse:
         if is_api_path(request.path):
             error_format = "api.json"
             content_type = "application/json"
@@ -49,10 +62,22 @@ class SpecialHandlerModule(SpecialModule):
 
         if http_exception.headers is not None:
             silent_delitem(http_exception.headers, hdrs.CONTENT_TYPE)
-        async with aopen(os.path.join("../templates/errors", error_format), "r", encoding="utf-8") as f:
+        async with aopen(
+            os.path.join("../templates/errors", error_format), "r", encoding="utf-8"
+        ) as f:
             content = await f.read()
-        return web.Response(status=http_exception.status, reason=http_exception.message, content_type=content_type, headers=http_exception.headers,
-            body=content % {"code": http_exception.status, "message": http_exception.message, "explain": http_exception.explain})
+        return web.Response(
+            status=http_exception.status,
+            reason=http_exception.message,
+            content_type=content_type,
+            headers=http_exception.headers,
+            body=content
+            % {
+                "code": http_exception.status,
+                "message": http_exception.message,
+                "explain": http_exception.explain,
+            },
+        )
 
     def get_router(self, request: CustomRequest):
         if request.site_host is None:
@@ -82,7 +107,9 @@ class SpecialHandlerModule(SpecialModule):
 
 
 class SpecialPreHandlerModule(PreHandlerModule):
-    async def handle_response(self, request: CustomRequest, response: web.StreamResponse) -> None:
+    async def handle_response(
+        self, request: CustomRequest, response: web.StreamResponse
+    ) -> None:
         if DEV_ENV:
             response.headers["Access-Control-Allow-Origin"] = "*"
 
@@ -91,12 +118,15 @@ class SpecialHTTPModule(HTTPModule):
     __slots__ = ()
 
     if DEV_ENV:
+
         @route("OPTIONS", "/api/{t:.*}")
         async def options_all(self, request):
-            return web.HTTPNoContent(headers={
-                "Access-Control-Allow-Methods": "*",
-                "Access-Control-Allow-Headers": "*"
-            })
+            return web.HTTPNoContent(
+                headers={
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Headers": "*",
+                }
+            )
 
 
 async def setup(module_manager: ModulesManager):

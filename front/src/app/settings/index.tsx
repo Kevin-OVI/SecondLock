@@ -1,20 +1,18 @@
 import styles from "./index.module.css";
 import genericStyles from "../../styles/generic.module.css";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
 import EditUsernameModal from "./EditUsernameModal.tsx";
-import {ACTION} from "../../utils/context/actionTypes.ts";
+import { ACTION } from "../../utils/context/actionTypes.ts";
 import EditPasswordModal from "./EditPasswordModal.tsx";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from "@mui/icons-material/Lock";
 import useSettings from "./useSettings.ts";
 import DeleteAccountModal from "./DeleteAccountModal.tsx";
 import DeleteAccountNote from "./DeleteAccountNote.tsx";
 
-
-
 export default function Settings() {
-  const {dispatch, username, editUser, deleteUser} = useSettings();
+  const { dispatch, username, editUser, deleteUser } = useSettings();
 
   return (
     <div className={styles.settings}>
@@ -30,9 +28,12 @@ export default function Settings() {
           </div>
           <Button
             variant="outlined"
-            startIcon={<EditIcon/>}
+            startIcon={<EditIcon />}
             onClick={() => {
-              dispatch({type: ACTION.DISPLAY_MODAL, payload: <EditUsernameModal editUser={editUser}/>});
+              dispatch({
+                type: ACTION.DISPLAY_MODAL,
+                payload: <EditUsernameModal editUser={editUser} />,
+              });
             }}
           >
             Modifier
@@ -40,8 +41,13 @@ export default function Settings() {
         </div>
         <Button
           variant="outlined"
-          startIcon={<LockIcon/>}
-          onClick={() => dispatch({type: ACTION.DISPLAY_MODAL, payload: <EditPasswordModal editUser={editUser}/>})}
+          startIcon={<LockIcon />}
+          onClick={() =>
+            dispatch({
+              type: ACTION.DISPLAY_MODAL,
+              payload: <EditPasswordModal editUser={editUser} />,
+            })
+          }
         >
           Modifier le mot de passe
         </Button>
@@ -49,12 +55,17 @@ export default function Settings() {
 
       <div className={styles.actions}>
         <h2>Suppression du compte</h2>
-        <DeleteAccountNote/>
+        <DeleteAccountNote />
         <Button
           variant="contained"
           color="error"
-          startIcon={<DeleteIcon/>}
-          onClick={() => dispatch({type: ACTION.DISPLAY_MODAL, payload: <DeleteAccountModal deleteUser={deleteUser}/>})}
+          startIcon={<DeleteIcon />}
+          onClick={() =>
+            dispatch({
+              type: ACTION.DISPLAY_MODAL,
+              payload: <DeleteAccountModal deleteUser={deleteUser} />,
+            })
+          }
         >
           Supprimer mon compte
         </Button>

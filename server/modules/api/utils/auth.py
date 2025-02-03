@@ -19,7 +19,14 @@ from core_utilities import CustomHTTPException, HTTPStatus, CustomRequest
 from modules.utils import fix_base64_padding, NS_MULTIPLIER
 from modules.utils.debugging import time_async_function
 
-__all__ = ("DUMMY_HASH", "gen_bcrypt", "check_bcrypt", "raise_invalid_token", "TokenEncryptorManager", "Token")
+__all__ = (
+    "DUMMY_HASH",
+    "gen_bcrypt",
+    "check_bcrypt",
+    "raise_invalid_token",
+    "TokenEncryptorManager",
+    "Token",
+)
 
 DUMMY_HASH = bcrypt.hashpw(b"", bcrypt.gensalt())
 
@@ -27,13 +34,19 @@ DUMMY_HASH = bcrypt.hashpw(b"", bcrypt.gensalt())
 @time_async_function
 async def gen_bcrypt(passhash: bytes, rounds: int = 12, prefix: bytes = b"2b") -> bytes:
     run_in_executor = asyncio.get_running_loop().run_in_executor
-    return await run_in_executor(None, bcrypt.hashpw, passhash,
-        await run_in_executor(None, bcrypt.gensalt, rounds, prefix))
+    return await run_in_executor(
+        None,
+        bcrypt.hashpw,
+        passhash,
+        await run_in_executor(None, bcrypt.gensalt, rounds, prefix),
+    )
 
 
 @time_async_function
 async def check_bcrypt(passhash: bytes, passhash_db: bytes) -> bool:
-    return await asyncio.get_running_loop().run_in_executor(None, bcrypt.checkpw, passhash, passhash_db)
+    return await asyncio.get_running_loop().run_in_executor(
+        None, bcrypt.checkpw, passhash, passhash_db
+    )
 
 
 def raise_invalid_token() -> NoReturn:
@@ -64,14 +77,18 @@ class TokenEncryptorManager:
         self._rotate_delay = token_validity_time / (n_encryptors - 1)
         self._expiry_delay = token_validity_time + self._rotate_delay
 
-        self._encryptors: list[tuple[TokenEncryptor, asyncio.Task] | None] = [None] * n_encryptors
+        self._encryptors: list[tuple[TokenEncryptor, asyncio.Task] | None] = [
+            None
+        ] * n_encryptors
         self._current_index = -1
 
         self._user_token_expirations: dict[int, tuple[int, asyncio.Task]] = {}
 
     async def _expire_encryptor(self, index: int):
         await asyncio.sleep(self._expiry_delay)
-        if (encryptor_group := self._encryptors[index]) is not None and encryptor_group[1] is asyncio.current_task():
+        if (encryptor_group := self._encryptors[index]) is not None and encryptor_group[
+            1
+        ] is asyncio.current_task():
             self._encryptors[index] = None
 
     def _generate_token(self, user_id: int, passhash: bytes) -> tuple[str, Token]:
@@ -81,12 +98,17 @@ class TokenEncryptorManager:
             prev = self._encryptors[self._current_index]
             if prev is not None:
                 prev[1].cancel()
-            self._encryptors[self._current_index] = (encryptor, asyncio.create_task(self._expire_encryptor(self._current_index)))
+            self._encryptors[self._current_index] = (
+                encryptor,
+                asyncio.create_task(self._expire_encryptor(self._current_index)),
+            )
             self._last_rotate = t
         else:
             encryptor = self._encryptors[self._current_index][0]
 
-        index_bytes = self._current_index.to_bytes(math.ceil((len(self._encryptors) - 1).bit_length() / 8), "big", signed=False)
+        index_bytes = self._current_index.to_bytes(
+            math.ceil((len(self._encryptors) - 1).bit_length() / 8), "big", signed=False
+        )
         b64_index = base64.b64encode(index_bytes).rstrip(b"=").decode("ascii")
         encrypted, token = encryptor.encrypt(user_id, passhash)
 
@@ -95,7 +117,9 @@ class TokenEncryptorManager:
     def generate_token(self, user_id: int, password: bytes) -> str:
         return self._generate_token(user_id, _hash_password(password))[0]
 
-    def regenerate_token(self, old_token: Token, password: bytes | None) -> tuple[str, Token]:
+    def regenerate_token(
+        self, old_token: Token, password: bytes | None
+    ) -> tuple[str, Token]:
         if password is None:
             return self._generate_token(old_token.user_id, old_token._key)
         return self._generate_token(old_token.user_id, _hash_password(password))
@@ -106,13 +130,15 @@ class TokenEncryptorManager:
         if token is None or not token.startswith(prefix_part):
             raise_invalid_token()
 
-        token = token[len(prefix_part):]
+        token = token[len(prefix_part) :]
         parts = token.split(".")
         if len(parts) != 2:
             raise_invalid_token()
 
         b64_index, encrypted = parts
-        index = int.from_bytes(base64.b64decode(fix_base64_padding(b64_index)), "big", signed=False)
+        index = int.from_bytes(
+            base64.b64decode(fix_base64_padding(b64_index)), "big", signed=False
+        )
         if index >= len(self._encryptors):
             raise_invalid_token()
 
@@ -122,8 +148,9 @@ class TokenEncryptorManager:
 
         decrypted_token = encryptor_group[0].decrypt(encrypted)
 
-        if (user_expiration := self._user_token_expirations.get(decrypted_token.user_id)) is not None and \
-                user_expiration[0] > decrypted_token.creation_timestamp:
+        if (
+            user_expiration := self._user_token_expirations.get(decrypted_token.user_id)
+        ) is not None and user_expiration[0] > decrypted_token.creation_timestamp:
             raise_invalid_token()
 
         return decrypted_token
@@ -146,7 +173,10 @@ class TokenEncryptorManager:
             await asyncio.sleep((expiry_timestamp - time.time_ns()) / NS_MULTIPLIER)
             del self._user_token_expirations[user_id]
 
-        self._user_token_expirations[user_id] = (creation_timestamp, asyncio.create_task(expire()))
+        self._user_token_expirations[user_id] = (
+            creation_timestamp,
+            asyncio.create_task(expire()),
+        )
 
     def cancel_tokens_expiration(self, user_id: int):
         try:
@@ -168,8 +198,15 @@ class TokenEncryptor:
 
     def encrypt(self, user_id: int, passhash: bytes) -> tuple[str, Token]:
         token_creation_timestamp = time.time_ns()
-        token = Token(user_id, passhash, token_creation_timestamp, token_creation_timestamp + self._token_validity_time_ns)
-        packed = struct.pack(self.TOKEN_STRUCT_FORMAT, token_creation_timestamp, user_id, passhash)
+        token = Token(
+            user_id,
+            passhash,
+            token_creation_timestamp,
+            token_creation_timestamp + self._token_validity_time_ns,
+        )
+        packed = struct.pack(
+            self.TOKEN_STRUCT_FORMAT, token_creation_timestamp, user_id, passhash
+        )
         return self._fernet.encrypt(packed).rstrip(b"=").decode("ascii"), token
 
     def decrypt(self, encrypted: str) -> Token:
@@ -178,8 +215,12 @@ class TokenEncryptor:
         except (InvalidToken, UnicodeDecodeError):
             raise_invalid_token()
 
-        token_creation_timestamp, user_id, key = struct.unpack(self.TOKEN_STRUCT_FORMAT, decrypted)
-        token_expiration_timestamp = token_creation_timestamp + self._token_validity_time_ns
+        token_creation_timestamp, user_id, key = struct.unpack(
+            self.TOKEN_STRUCT_FORMAT, decrypted
+        )
+        token_expiration_timestamp = (
+            token_creation_timestamp + self._token_validity_time_ns
+        )
         now = time.time_ns()
         if now > token_expiration_timestamp:
             raise_invalid_token()
@@ -190,7 +231,9 @@ class TokenEncryptor:
 class Token:
     __slots__ = ("user_id", "_key", "value", "creation_timestamp", "expiry_timestamp")
 
-    def __init__(self, user_id: int, key: bytes, creation_timestamp: int, expiry_timestamp: int):
+    def __init__(
+        self, user_id: int, key: bytes, creation_timestamp: int, expiry_timestamp: int
+    ):
         self.user_id = user_id
         self._key = key
         self.creation_timestamp = creation_timestamp
@@ -199,7 +242,9 @@ class Token:
     def encrypt(self, plaintext: bytes):
         iv = os.urandom(16)
 
-        cipher = Cipher(algorithms.AES(self._key), modes.GCM(iv), backend=default_backend())
+        cipher = Cipher(
+            algorithms.AES(self._key), modes.GCM(iv), backend=default_backend()
+        )
         encryptor = cipher.encryptor()
 
         ciphertext = encryptor.update(plaintext) + encryptor.finalize()
@@ -210,7 +255,9 @@ class Token:
         tag = ciphertext[-16:]  # 16 derniers bytes en AES-GCM
         ciphertext = ciphertext[16:-16]
 
-        cipher = Cipher(algorithms.AES(self._key), modes.GCM(iv, tag), backend=default_backend())
+        cipher = Cipher(
+            algorithms.AES(self._key), modes.GCM(iv, tag), backend=default_backend()
+        )
         decryptor = cipher.decryptor()
 
         return decryptor.update(ciphertext) + decryptor.finalize()

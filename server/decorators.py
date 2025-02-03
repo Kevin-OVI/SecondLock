@@ -30,7 +30,9 @@ def event(event_name: str, priority: int = 0):
         if hasattr(func, "__events__"):
             already_registered = func.__events__.get(event_name)
             if already_registered is not None:
-                raise ValueError(f"event {event_name} is already registered on function {func} with priority {already_registered}")
+                raise ValueError(
+                    f"event {event_name} is already registered on function {func} with priority {already_registered}"
+                )
             func.__events__[event_name] = priority
         else:
             func.__events__ = {event_name: priority}

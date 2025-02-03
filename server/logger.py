@@ -17,7 +17,12 @@ class DayFileHandler(logging.FileHandler):
             self.setLevel(level)
 
     def get_current_filename(self, now: time.struct_time):
-        return os.path.abspath(os.path.join(self.directory, f"{now.tm_year}-{now.tm_mon:>02d}-{now.tm_mday:>02d}.log"))
+        return os.path.abspath(
+            os.path.join(
+                self.directory,
+                f"{now.tm_year}-{now.tm_mon:>02d}-{now.tm_mday:>02d}.log",
+            )
+        )
 
     @staticmethod
     def get_time_tuple(now: time.struct_time):

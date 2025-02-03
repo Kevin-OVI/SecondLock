@@ -1,23 +1,24 @@
 import GenericModal from "../../utils/modals/GenericModal.tsx";
-import {useState} from "react";
+import { useState } from "react";
 import UsernameField from "../../utils/components/fields/UsernameField.tsx";
-import {wrapHandlerEnter} from "../../utils/functions.ts";
-import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
+import { wrapHandlerEnter } from "../../utils/functions.ts";
+import { FieldErrors, ModalButtonsState } from "../../utils/types.ts";
 import PasswordField from "../../utils/components/fields/PasswordField.tsx";
-import {validatePassword, validateUsername} from "../../utils/components/fields/validation.ts";
-import {EditUserCallback} from "./useSettings.ts";
+import {
+  validatePassword,
+  validateUsername,
+} from "../../utils/components/fields/validation.ts";
+import { EditUserCallback } from "./useSettings.ts";
 import useAppContext from "../../utils/context/useAppContext.ts";
-import {WarningNote} from "../../utils/components/notes";
+import { WarningNote } from "../../utils/components/notes";
 import styles from "./index.module.css";
-
 
 interface EditUsernameProps {
   editUser: EditUserCallback;
 }
 
-
-export default function EditUsernameModal({editUser}: EditUsernameProps) {
-  const [{username: storedUsername}] = useAppContext();
+export default function EditUsernameModal({ editUser }: EditUsernameProps) {
+  const [{ username: storedUsername }] = useAppContext();
 
   const [open, setOpen] = useState(true);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
@@ -49,7 +50,7 @@ export default function EditUsernameModal({editUser}: EditUsernameProps) {
 
       const errors: FieldErrors = {};
 
-      if (await editUser({newUsername: username}, password, errors)) {
+      if (await editUser({ newUsername: username }, password, errors)) {
         setOpen(false);
       } else {
         setErrors(errors);
@@ -61,34 +62,39 @@ export default function EditUsernameModal({editUser}: EditUsernameProps) {
 
   const handleEnter = wrapHandlerEnter(handleValidate);
 
-  return <GenericModal
-    title="Modifier le nom d'utilisateur"
-    exitOnClick={false}
-    open={open}
-    setOpen={setOpen}
-    onValidate={handleValidate}
-    buttonsState={buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT}
-  >
-    <WarningNote className={styles.editUsernameWarning}>
-      Attention, modifier votre nom d'utilisateur changera votre identifiant de connexion.
-    </WarningNote>
-    <UsernameField
-      label="Nouveau nom d'utilisateur"
-      username={username}
-      setUsername={setUsername}
-      onKeyDown={handleEnter}
-      errors={errors}
-      setErrors={setErrors}
-      autoFocus
-    />
-    <PasswordField
-      label="Mot de passe actuel"
-      name="currentPassword"
-      password={password}
-      setPassword={setPassword}
-      onKeyDown={handleEnter}
-      errors={errors}
-      setErrors={setErrors}
-    />
-  </GenericModal>;
+  return (
+    <GenericModal
+      title="Modifier le nom d'utilisateur"
+      exitOnClick={false}
+      open={open}
+      setOpen={setOpen}
+      onValidate={handleValidate}
+      buttonsState={
+        buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT
+      }
+    >
+      <WarningNote className={styles.editUsernameWarning}>
+        Attention, modifier votre nom d'utilisateur changera votre identifiant
+        de connexion.
+      </WarningNote>
+      <UsernameField
+        label="Nouveau nom d'utilisateur"
+        username={username}
+        setUsername={setUsername}
+        onKeyDown={handleEnter}
+        errors={errors}
+        setErrors={setErrors}
+        autoFocus
+      />
+      <PasswordField
+        label="Mot de passe actuel"
+        name="currentPassword"
+        password={password}
+        setPassword={setPassword}
+        onKeyDown={handleEnter}
+        errors={errors}
+        setErrors={setErrors}
+      />
+    </GenericModal>
+  );
 }

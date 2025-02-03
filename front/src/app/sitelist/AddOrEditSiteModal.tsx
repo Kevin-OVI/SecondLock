@@ -3,15 +3,18 @@ import { Site } from "./SiteElement.tsx";
 import GenericModal from "../../utils/modals/GenericModal.tsx";
 import TextInput from "../../utils/components/TextInput.tsx";
 import useGenericModal from "../../utils/modals/useGenericModal.ts";
-import {SiteInputCallback} from "./AddSiteButtons.tsx";
-import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
+import { SiteInputCallback } from "./AddSiteButtons.tsx";
+import { FieldErrors, ModalButtonsState } from "../../utils/types.ts";
 
 interface AddOrEditSiteModalProps {
   editSite?: Site;
   callback: SiteInputCallback;
 }
 
-export default function AddOrEditSiteModal({ editSite, callback }: AddOrEditSiteModalProps) {
+export default function AddOrEditSiteModal({
+  editSite,
+  callback,
+}: AddOrEditSiteModalProps) {
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const [name, setName] = useState(editSite?.name || "");
   const [secret, setSecret] = useState("");
@@ -22,7 +25,8 @@ export default function AddOrEditSiteModal({ editSite, callback }: AddOrEditSite
     const errors: FieldErrors = {};
 
     if (!name) errors.name = "Le nom du compte est requis";
-    else if (name.length > 64) errors.name = "Le nom du compte doit faire au maximum 64 caractères";
+    else if (name.length > 64)
+      errors.name = "Le nom du compte doit faire au maximum 64 caractères";
 
     if (!editSite) {
       if (!secret) errors.secret = "La clé secrète est requise";
@@ -64,9 +68,12 @@ export default function AddOrEditSiteModal({ editSite, callback }: AddOrEditSite
       title={editSite ? "Modifier un compte" : "Ajouter un compte"}
       onValidate={handleSubmit}
       exitOnClick={false}
-      buttonsState={buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT}
+      buttonsState={
+        buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT
+      }
       open={open}
-      setOpen={setOpen}>
+      setOpen={setOpen}
+    >
       <TextInput
         type="text"
         name="name"

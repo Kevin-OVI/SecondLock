@@ -1,9 +1,15 @@
-import {ReactNode, useRef} from "react";
+import { ReactNode, useRef } from "react";
 import "./GenericModal.css";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
-import {ACTION} from "../context/actionTypes";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { ACTION } from "../context/actionTypes";
 import useAppContext from "../context/useAppContext.ts";
-import {ModalButtonsState} from "../types.ts";
+import { ModalButtonsState } from "../types.ts";
 
 export interface GenericModalProps {
   title?: ReactNode;
@@ -29,7 +35,10 @@ export default function GenericModal({
   const [, dispatch] = useAppContext();
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  function handleDialogClose(_event: unknown, reason: "backdropClick" | "escapeKeyDown" | "cancelButton") {
+  function handleDialogClose(
+    _event: unknown,
+    reason: "backdropClick" | "escapeKeyDown" | "cancelButton",
+  ) {
     if (reason === "backdropClick" && !exitOnClick) {
       return;
     }
@@ -45,7 +54,12 @@ export default function GenericModal({
   }
 
   return (
-    <Dialog ref={dialogRef} open={open} onClose={handleDialogClose} slotProps={{ transition: { onExited: handleDialogCloseTransitionEnded } }}>
+    <Dialog
+      ref={dialogRef}
+      open={open}
+      onClose={handleDialogClose}
+      slotProps={{ transition: { onExited: handleDialogCloseTransitionEnded } }}
+    >
       {title && <DialogTitle>{title}</DialogTitle>}
 
       <DialogContent>{children}</DialogContent>
@@ -53,11 +67,19 @@ export default function GenericModal({
       <DialogActions>
         {buttonsState !== ModalButtonsState.HIDDEN && (
           <>
-            <Button variant="outlined" onClick={() => handleDialogClose(null, "cancelButton")} disabled={buttonsState === ModalButtonsState.DISABLED}>
+            <Button
+              variant="outlined"
+              onClick={() => handleDialogClose(null, "cancelButton")}
+              disabled={buttonsState === ModalButtonsState.DISABLED}
+            >
               Annuler
             </Button>
             {onValidate && (
-              <Button variant="contained" onClick={onValidate} disabled={buttonsState === ModalButtonsState.DISABLED}>
+              <Button
+                variant="contained"
+                onClick={onValidate}
+                disabled={buttonsState === ModalButtonsState.DISABLED}
+              >
                 Valider
               </Button>
             )}

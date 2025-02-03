@@ -1,5 +1,5 @@
-import {Dispatch, useContext} from "react";
-import {Action, AppContextProps, Context} from "./Context.ts";
+import { Dispatch, useContext } from "react";
+import { Action, AppContextProps, Context } from "./Context.ts";
 
 export default function useAppContext(): [AppContextProps, Dispatch<Action>] {
   const context = useContext(Context);

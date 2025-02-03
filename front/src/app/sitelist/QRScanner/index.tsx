@@ -1,28 +1,27 @@
-import {IDetectedBarcode, Scanner} from "@yudiel/react-qr-scanner";
-import {useState} from "react";
-import {SiteInputCallback} from "../AddSiteButtons.tsx";
+import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import { useState } from "react";
+import { SiteInputCallback } from "../AddSiteButtons.tsx";
 import styles from "./index.module.css";
-import {CircularProgress, IconButton} from "@mui/material";
+import { CircularProgress, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import {ACTION} from "../../../utils/context/actionTypes.ts";
-import {FieldErrors} from "../../../utils/types.ts";
+import { ACTION } from "../../../utils/context/actionTypes.ts";
+import { FieldErrors } from "../../../utils/types.ts";
 import useAppContext from "../../../utils/context/useAppContext.ts";
 
-const UNSUPPORTED_OTP_METHOD = "Nous ne prenons pas en charge cette méthode d'OTP : %s.";
+const UNSUPPORTED_OTP_METHOD =
+  "Nous ne prenons pas en charge cette méthode d'OTP : %s.";
 const INVALID_QR_CODE = "Le format du QR Code est invalide";
-
 
 interface AddSiteQRCodeScannerProps {
   callback: SiteInputCallback;
 }
 
-
-export default function QRScanner({callback}: AddSiteQRCodeScannerProps) {
+export default function QRScanner({ callback }: AddSiteQRCodeScannerProps) {
   const [, dispatch] = useAppContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   function close() {
-    dispatch({type: ACTION.DISPLAY_MODAL, payload: null});
+    dispatch({ type: ACTION.DISPLAY_MODAL, payload: null });
   }
 
   async function handleScan(result: IDetectedBarcode[]) {
@@ -58,10 +57,14 @@ export default function QRScanner({callback}: AddSiteQRCodeScannerProps) {
       }
 
       const errors: FieldErrors = {};
-      if (await callback({name: label.substring(0, 64), secret}, errors)) {
+      if (await callback({ name: label.substring(0, 64), secret }, errors)) {
         close();
       } else {
-        alert(Object.entries(errors).map(([k, v]) => `${k}: ${v}`).join("\n"));
+        alert(
+          Object.entries(errors)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join("\n"),
+        );
       }
     } finally {
       setLoading(false);
@@ -78,7 +81,7 @@ export default function QRScanner({callback}: AddSiteQRCodeScannerProps) {
     <div className={styles.scanner}>
       <div className={styles.backButton}>
         <IconButton onClick={close}>
-          <ArrowBackIcon/>
+          <ArrowBackIcon />
         </IconButton>
       </div>
       <Scanner
@@ -87,13 +90,18 @@ export default function QRScanner({callback}: AddSiteQRCodeScannerProps) {
         allowMultiple={false}
         formats={["qr_code"]}
         paused={loading}
-        styles={{video: {width: "", height: "", top: "", left: ""}}}
-        classNames={{container: styles.scannerContainer, video: styles.scannerVideo}}
+        styles={{ video: { width: "", height: "", top: "", left: "" } }}
+        classNames={{
+          container: styles.scannerContainer,
+          video: styles.scannerVideo,
+        }}
       />
       <div className={styles.scannerOverlay}>
-        {loading && <div className={styles.loading}>
-            <CircularProgress/>
-        </div>}
+        {loading && (
+          <div className={styles.loading}>
+            <CircularProgress />
+          </div>
+        )}
       </div>
     </div>
   );

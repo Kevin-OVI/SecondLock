@@ -2,7 +2,13 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field, BeforeValidator
 
-__all__ = ("LoginRegisterModel", "UpdateSiteModel", "CreateSiteModel", "DangerousActionModel", "UpdateUserModel")
+__all__ = (
+    "LoginRegisterModel",
+    "UpdateSiteModel",
+    "CreateSiteModel",
+    "DangerousActionModel",
+    "UpdateUserModel",
+)
 
 
 def _convert_password(s: str) -> bytes:
