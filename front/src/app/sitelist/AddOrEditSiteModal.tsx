@@ -1,8 +1,8 @@
 import { useState, KeyboardEvent } from "react";
-import { Site } from "./SiteElement";
-import GenericModal from "../../utils/modals/GenericModal";
-import TextInput from "../../utils/components/TextInput";
-import useGenericModal from "../../utils/modals/useGenericModal";
+import { Site } from "./SiteElement.tsx";
+import GenericModal from "../../utils/modals/GenericModal.tsx";
+import TextInput from "../../utils/components/TextInput.tsx";
+import useGenericModal from "../../utils/modals/useGenericModal.ts";
 import {SiteInputCallback} from "./AddSiteButtons.tsx";
 import {FieldErrors, ModalButtonsState} from "../../utils/types.ts";
 

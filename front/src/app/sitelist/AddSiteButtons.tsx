@@ -1,8 +1,8 @@
 import {useState} from "react";
-import {ACTION} from "../../utils/context/actionTypes";
-import AddOrEditSiteModal from "./AddOrEditSiteModal";
+import {ACTION} from "../../utils/context/actionTypes.ts";
+import AddOrEditSiteModal from "./AddOrEditSiteModal.tsx";
 import {SpeedDial, SpeedDialAction, SpeedDialIcon} from "@mui/material";
-import QRScanner from "./QRScanner";
+import QRScanner from "./QRScanner/index.tsx";
 import {FieldErrors} from "../../utils/types.ts";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import CreateIcon from "@mui/icons-material/Create";

@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
-import {ACTION} from "../../utils/context/actionTypes";
-import AddOrEditSiteModal from "./AddOrEditSiteModal";
-import DeleteSiteModal, {SiteRemoveCallback} from "./DeleteSiteModal";
+import {ACTION} from "../../utils/context/actionTypes.ts";
+import AddOrEditSiteModal from "./AddOrEditSiteModal.tsx";
+import DeleteSiteModal, {SiteRemoveCallback} from "./DeleteSiteModal.tsx";
 import styles from "./index.module.css";
 import {IconButton, Menu, MenuItem, Tooltip} from "@mui/material";
 import PopupState, {bindMenu, bindTrigger, InjectedProps} from "material-ui-popup-state";

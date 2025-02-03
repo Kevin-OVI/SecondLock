@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import styles from "./index.module.css";
-import {AddSiteButtons, InputSite} from "./AddSiteButtons";
-import SiteElement, {Site} from "./SiteElement";
+import {AddSiteButtons, InputSite} from "./AddSiteButtons.tsx";
+import SiteElement, {Site} from "./SiteElement.tsx";
 import {CircularProgress} from "@mui/material";
 import {FieldErrors} from "../../utils/types.ts";
 import useAppContext from "../../utils/context/useAppContext.ts";

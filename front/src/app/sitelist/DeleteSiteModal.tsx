@@ -1,6 +1,6 @@
-import GenericModal from "../../utils/modals/GenericModal";
-import useGenericModal from "../../utils/modals/useGenericModal";
-import {Site} from "./SiteElement";
+import GenericModal from "../../utils/modals/GenericModal.tsx";
+import useGenericModal from "../../utils/modals/useGenericModal.ts";
+import {Site} from "./SiteElement.tsx";
 
 import useAppContext from "../../utils/context/useAppContext.ts";
 

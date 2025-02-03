@@ -1,11 +1,11 @@
 import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
-import SiteList from "./sitelist";
+import SiteList from "./sitelist/index.tsx";
 import {AppBar, Container, IconButton, ListItemIcon, Menu, MenuItem, Toolbar, Tooltip} from "@mui/material";
 import styles from "./index.module.css";
 import PopupState, {bindMenu, bindTrigger, InjectedProps} from "material-ui-popup-state";
 import {AccountCircle, Logout, Settings as SettingsIcon} from "@mui/icons-material";
 import {ACTION} from "../utils/context/actionTypes.ts";
-import Settings from "./settings";
+import Settings from "./settings/index.tsx";
 import useAppContext from "../utils/context/useAppContext.ts";
 
 export default function Main() {
