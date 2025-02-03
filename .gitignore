@@ -1,7 +1,9 @@
 *.py[cod]
 *.log
-.idea/
-server/.env
-server/cert
-server/database.db
-*.pyc
+*.env*
+.DS_Store
+
+# IDE
+*.idea/
+.vscode/
+*.code-workspace
