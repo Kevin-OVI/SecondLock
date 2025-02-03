@@ -41,3 +41,7 @@
   align-items: center;
   flex-direction: row;
 }
+
+.editUsernameWarning {
+  margin-bottom: 1em;
+}

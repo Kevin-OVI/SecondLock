@@ -7,6 +7,8 @@ import PasswordField from "../../utils/components/fields/PasswordField.tsx";
 import {validatePassword, validateUsername} from "../../utils/components/fields/validation.ts";
 import {EditUserCallback} from "./useSettings.ts";
 import useAppContext from "../../utils/context/useAppContext.ts";
+import {WarningNote} from "../../utils/components/notes";
+import styles from "./index.module.css";
 
 
 interface EditUsernameProps {
@@ -67,6 +69,9 @@ export default function EditUsernameModal({editUser}: EditUsernameProps) {
     onValidate={handleValidate}
     buttonsState={buttonsDisabled ? ModalButtonsState.DISABLED : ModalButtonsState.DEFAULT}
   >
+    <WarningNote className={styles.editUsernameWarning}>
+      Attention, modifier votre nom d'utilisateur changera votre identifiant de connexion.
+    </WarningNote>
     <UsernameField
       label="Nouveau nom d'utilisateur"
       username={username}

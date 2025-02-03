@@ -1,15 +1,8 @@
-import {ReactNode} from "react";
+import {DetailedHTMLProps, HTMLAttributes} from "react";
 import styles from "./index.module.css";
 
-interface NoteProps {
-  children: ReactNode;
-}
+type NoteProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export function WarningNote({children}: NoteProps) {
-  return (
-    <div className={styles.warningNote}>
-      <div>{children}</div>
-    </div>
-  );
-
+export function WarningNote({className, ...props}: NoteProps) {
+  return <div className={styles.warningNote + (className ? ` ${className}` : "")} {...props}/>;
 }
