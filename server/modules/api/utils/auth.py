@@ -17,7 +17,6 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from core_utilities import CustomHTTPException, HTTPStatus, CustomRequest
 from modules.utils import fix_base64_padding, NS_MULTIPLIER
-from modules.utils.debugging import time_async_function
 
 __all__ = (
     "DUMMY_HASH",
@@ -31,7 +30,6 @@ __all__ = (
 DUMMY_HASH = bcrypt.hashpw(b"", bcrypt.gensalt())
 
 
-@time_async_function
 async def gen_bcrypt(passhash: bytes, rounds: int = 12, prefix: bytes = b"2b") -> bytes:
     run_in_executor = asyncio.get_running_loop().run_in_executor
     return await run_in_executor(
@@ -42,7 +40,6 @@ async def gen_bcrypt(passhash: bytes, rounds: int = 12, prefix: bytes = b"2b") -
     )
 
 
-@time_async_function
 async def check_bcrypt(passhash: bytes, passhash_db: bytes) -> bool:
     return await asyncio.get_running_loop().run_in_executor(
         None, bcrypt.checkpw, passhash, passhash_db
