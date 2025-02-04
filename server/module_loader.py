@@ -64,9 +64,21 @@ def scan_modules() -> list[str]:
                 config = load_config(item_path.joinpath(CONFIG_FILE_NAME))
                 dependencies = config.get("dependencies")
                 if dependencies:
-                    by_dependencies[item_id] = set(dependencies)
+                    deps = set(dependencies)
                 else:
-                    by_dependencies[item_id] = set()
+                    deps = set()
+
+                for scanned_module in by_dependencies:
+                    if item_id.startswith(scanned_module):
+                        deps.add(scanned_module)
+
+                by_dependencies[item_id] = deps
+
+                scan_subdirs: list[str] | None = config.get("load_subdirectories", None)
+                if scan_subdirs:
+                    stack.extend(
+                        item_path.joinpath(subdir) for subdir in set(scan_subdirs)
+                    )
             else:
                 stack.append(item_path)
 
