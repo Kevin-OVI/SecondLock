@@ -23,6 +23,7 @@ __all__ = (
     "raise_invalid_token",
     "TokenEncryptorManager",
     "Token",
+    "hash_password",
 )
 
 DUMMY_HASH = bcrypt.hashpw(b"", bcrypt.gensalt())
@@ -48,7 +49,7 @@ def raise_invalid_token() -> NoReturn:
     raise CustomHTTPException.only_explain(HTTPStatus.UNAUTHORIZED, "Invalid token")
 
 
-def _hash_password(password: bytes) -> bytes:
+def hash_password(password: bytes) -> bytes:
     return hashlib.sha256(password).digest()
 
 
@@ -110,14 +111,14 @@ class TokenEncryptorManager:
         return f"{self._token_prefix}.{b64_index}.{encrypted}", token
 
     def generate_token(self, user_id: int, password: bytes) -> str:
-        return self._generate_token(user_id, _hash_password(password))[0]
+        return self._generate_token(user_id, hash_password(password))[0]
 
     def regenerate_token(
         self, old_token: Token, password: bytes | None
     ) -> tuple[str, Token]:
         if password is None:
             return self._generate_token(old_token.user_id, old_token._key)
-        return self._generate_token(old_token.user_id, _hash_password(password))
+        return self._generate_token(old_token.user_id, hash_password(password))
 
     def get_token(self, request: CustomRequest) -> Token:
         token: str = request.headers.get(hdrs.AUTHORIZATION)
@@ -235,4 +236,4 @@ class Token(Encryptor):
         self.expiry_timestamp = expiry_timestamp
 
     def is_correct_password(self, password: bytes):
-        return _hash_password(password) == self._key
+        return hash_password(password) == self._key
