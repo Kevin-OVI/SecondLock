@@ -4,7 +4,6 @@ import asyncio
 import base64
 import hashlib
 import math
-import os
 import struct
 import time
 from typing import NoReturn
@@ -12,11 +11,10 @@ from typing import NoReturn
 import bcrypt
 from aiohttp import hdrs
 from cryptography.fernet import Fernet, InvalidToken
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from core_utilities import CustomHTTPException, HTTPStatus, CustomRequest
 from modules.utils import fix_base64_padding, NS_MULTIPLIER
+from ..utils.encryption import Encryptor
 
 __all__ = (
     "DUMMY_HASH",
@@ -225,45 +223,16 @@ class TokenEncryptor:
         return Token(user_id, key, token_creation_timestamp, token_expiration_timestamp)
 
 
-class Token:
-    __slots__ = ("user_id", "_key", "value", "creation_timestamp", "expiry_timestamp")
+class Token(Encryptor):
+    __slots__ = ("user_id", "value", "creation_timestamp", "expiry_timestamp")
 
     def __init__(
         self, user_id: int, key: bytes, creation_timestamp: int, expiry_timestamp: int
     ):
+        super().__init__(key)
         self.user_id = user_id
-        self._key = key
         self.creation_timestamp = creation_timestamp
         self.expiry_timestamp = expiry_timestamp
-
-    def encrypt(self, plaintext: bytes):
-        iv = os.urandom(16)
-
-        cipher = Cipher(
-            algorithms.AES(self._key), modes.GCM(iv), backend=default_backend()
-        )
-        encryptor = cipher.encryptor()
-
-        ciphertext = encryptor.update(plaintext) + encryptor.finalize()
-        return iv + ciphertext + encryptor.tag
-
-    def decrypt(self, ciphertext: bytes) -> bytes:
-        iv = ciphertext[:16]
-        tag = ciphertext[-16:]  # 16 derniers bytes en AES-GCM
-        ciphertext = ciphertext[16:-16]
-
-        cipher = Cipher(
-            algorithms.AES(self._key), modes.GCM(iv, tag), backend=default_backend()
-        )
-        decryptor = cipher.decryptor()
-
-        return decryptor.update(ciphertext) + decryptor.finalize()
-
-    def encrypt_string(self, plaintext: str) -> bytes:
-        return self.encrypt(plaintext.encode("utf-8"))
-
-    def decrypt_string(self, ciphertext: bytes) -> str:
-        return self.decrypt(ciphertext).decode("utf-8")
 
     def is_correct_password(self, password: bytes):
         return _hash_password(password) == self._key
