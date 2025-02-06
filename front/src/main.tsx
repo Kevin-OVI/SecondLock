@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")!).render(
           <CssBaseline />
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/app*" element={<Main />} />
+            <Route path="/app/*" element={<Main />} />
             <Route path="/" element={<Navigate to="/app" />} />
             <Route path="*" element={<Error404 />} />
           </Routes>
