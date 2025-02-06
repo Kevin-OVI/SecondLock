@@ -7,12 +7,14 @@ export interface AppContextProps {
   token?: string;
   api: API;
   displayedModal?: ReactNode;
+  snackbar?: ReactElement;
 }
 
 export type Action =
   | { type: ACTION.LOAD_SESSION; payload: { username: string; token: string } }
   | { type: ACTION.DISCONNECT }
-  | { type: ACTION.DISPLAY_MODAL; payload?: ReactElement };
+  | { type: ACTION.DISPLAY_MODAL; payload?: ReactNode }
+  | { type: ACTION.DISPLAY_SNACKBAR; payload?: ReactElement };
 
 export const Context = createContext<
   [AppContextProps, Dispatch<Action>] | null

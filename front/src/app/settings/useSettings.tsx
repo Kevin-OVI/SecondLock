@@ -1,9 +1,10 @@
+import { Alert } from "@mui/material";
 import useAppContext from "../../utils/context/useAppContext.ts";
 import { FieldErrors } from "../../utils/types.ts";
 import { ACTION } from "../../utils/context/actionTypes.ts";
 import { Dispatch } from "react";
 import { Action } from "../../utils/context/Context.ts";
-import { HTTPError } from "../../utils/context/api.ts";
+import { HTTPError } from "../../utils/context/api";
 
 interface EditUserFields {
   newUsername?: string;
@@ -90,7 +91,14 @@ export default function useSettings(): UseSettingsReturn {
       return false;
     }
     dispatch({ type: ACTION.DISCONNECT });
-    alert("Votre compte a bien été supprimé.");
+    dispatch({
+      type: ACTION.DISPLAY_SNACKBAR,
+      payload: (
+        <Alert severity="success" variant="filled">
+          Votre compte a bien été supprimé.
+        </Alert>
+      ),
+    });
     return true;
   }
 

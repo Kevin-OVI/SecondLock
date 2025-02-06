@@ -5,7 +5,7 @@ import SiteElement, { Site } from "./SiteElement.tsx";
 import { CircularProgress } from "@mui/material";
 import { FieldErrors } from "../../utils/types.ts";
 import useAppContext from "../../utils/context/useAppContext.ts";
-import { HTTPError } from "../../utils/context/api.ts";
+import { HTTPError } from "../../utils/context/api";
 
 function SiteListLoading() {
   return (

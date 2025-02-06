@@ -15,7 +15,7 @@ import {
 } from "../utils/components/fields/validation.ts";
 import useAppContext from "../utils/context/useAppContext.ts";
 import { Navigate } from "react-router-dom";
-import { HTTPError } from "../utils/context/api.ts";
+import { HTTPError } from "../utils/context/api";
 
 export default function Login() {
   const [{ username: storedUsername, api, token }, dispatch] = useAppContext();

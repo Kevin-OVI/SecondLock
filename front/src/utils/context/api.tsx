@@ -1,8 +1,9 @@
 import { Dispatch } from "react";
 import { Action, AppContextProps } from "./Context.ts";
-import { ACTION } from "./actionTypes";
+import { ACTION } from "./actionTypes.ts";
 import { JSONType } from "../types.ts";
 import { formatDurationSeconds } from "../functions.ts";
+import { Alert } from "@mui/material";
 
 type HttpHeaders = {
   [key: string]: string;
@@ -120,7 +121,14 @@ export class API {
     }
 
     if (error instanceof FetchError) {
-      alert(`Erreur de connexion au serveur : ${error.cause}`);
+      this.dispatch({
+        type: ACTION.DISPLAY_SNACKBAR,
+        payload: (
+          <Alert severity="error" variant="filled">
+            Erreur de connexion au serveur : {error.cause}.
+          </Alert>
+        ),
+      });
       return;
     }
     if (error instanceof HTTPError) {
@@ -129,27 +137,53 @@ export class API {
         return;
       }
       if (error.status === 403) {
-        alert(
-          "Vous n'avez pas les droits nécessaires pour effectuer cette action.",
-        );
+        this.dispatch({
+          type: ACTION.DISPLAY_SNACKBAR,
+          payload: (
+            <Alert severity="error" variant="filled">
+              Vous n'avez pas les droits nécessaires pour effectuer cette
+              action.
+            </Alert>
+          ),
+        });
         return;
       }
       if (error.status === 429) {
         const retryIn: number | null = error.json?.retry_after;
-        alert(
-          retryIn === null
-            ? "Trop de requêtes, veuillez réessayer plus tard."
-            : `Trop de requêtes, veuillez réessayer dans ${formatDurationSeconds(
-                retryIn,
-              )}.`,
-        );
+
+        this.dispatch({
+          type: ACTION.DISPLAY_SNACKBAR,
+          payload: (
+            <Alert severity="error" variant="filled">
+              Trop de requêtes, veuillez réessayer{" "}
+              {retryIn === null
+                ? "plus tard"
+                : `dans ${formatDurationSeconds(retryIn)}`}
+              .
+            </Alert>
+          ),
+        });
         return;
       }
 
-      alert(error.message);
+      this.dispatch({
+        type: ACTION.DISPLAY_SNACKBAR,
+        payload: (
+          <Alert severity="error" variant="filled">
+            {error.message}
+          </Alert>
+        ),
+      });
       return;
     }
-    alert(`Erreur inconnue : ${error}`);
+    this.dispatch({
+      type: ACTION.DISPLAY_SNACKBAR,
+      payload: (
+        <Alert severity="error" variant="filled">
+          Erreur inconnue : {error}.
+        </Alert>
+      ),
+    });
   }
 
   async fetchAPI(

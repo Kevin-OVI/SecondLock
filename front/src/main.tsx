@@ -9,6 +9,7 @@ import ModalDisplayer from "./utils/modals/ModalDisplayer";
 import Main from "./app";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Error404 from "./Error404";
+import SnackbarDisplayer from "./utils/snackbar/SnackbarDisplayer.tsx";
 
 const darkTheme = createTheme({
   palette: {
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="*" element={<Error404 />} />
           </Routes>
           <ModalDisplayer />
+          <SnackbarDisplayer />
         </BrowserRouter>
       </ThemeProvider>
     </ContextProvider>

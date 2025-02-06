@@ -3,7 +3,9 @@ import useGenericModal from "../../utils/modals/useGenericModal.ts";
 import { Site } from "./SiteElement.tsx";
 
 import useAppContext from "../../utils/context/useAppContext.ts";
-import { HTTPError } from "../../utils/context/api.ts";
+import { HTTPError } from "../../utils/context/api";
+import { ACTION } from "../../utils/context/actionTypes.ts";
+import { Alert } from "@mui/material";
 
 export type SiteRemoveCallback = (id: number) => void;
 
@@ -16,7 +18,7 @@ export default function DeleteSiteModal({
   site,
   handleRemoveSite,
 }: DeleteSiteModalProps) {
-  const [{ api }] = useAppContext();
+  const [{ api }, dispatch] = useAppContext();
   const { open, setOpen } = useGenericModal();
 
   async function handleValidate() {
@@ -25,7 +27,14 @@ export default function DeleteSiteModal({
     } catch (e) {
       if (e instanceof HTTPError) {
         if (e.status === 404) {
-          alert("Ce site n'existe pas, peut-être a-t-il déjà été supprimé.");
+          dispatch({
+            type: ACTION.DISPLAY_SNACKBAR,
+            payload: (
+              <Alert severity="error" variant="filled">
+                Ce site n'existe pas, peut-être a-t-il déjà été supprimé.
+              </Alert>
+            ),
+          });
         } else {
           api.handleUnexpectedError(e);
         }

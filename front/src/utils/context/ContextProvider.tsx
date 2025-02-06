@@ -1,7 +1,7 @@
 import { ReactElement, ReactNode, useEffect, useReducer } from "react";
 import { ACTION } from "./actionTypes.ts";
 import { Action, AppContextProps, Context } from "./Context.ts";
-import { API } from "./api.ts";
+import { API } from "./api";
 
 const initialState: AppContextProps = {
   username: localStorage.username,
@@ -23,6 +23,9 @@ const reducer = (state: AppContextProps, action: Action): AppContextProps => {
       break;
     case ACTION.DISPLAY_MODAL:
       state = { ...state, displayedModal: action.payload };
+      break;
+    case ACTION.DISPLAY_SNACKBAR:
+      state = { ...state, snackbar: action.payload };
       break;
   }
 
