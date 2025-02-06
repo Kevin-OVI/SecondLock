@@ -6,7 +6,7 @@ export interface AppContextProps {
   username?: string;
   token?: string;
   api: API;
-  displayedModal: ReactNode;
+  displayedModal?: ReactNode;
 }
 
 export type Action =
