@@ -14,7 +14,11 @@ from core_utilities import (
     HTTPStatus,
 )
 from module_loader import ModulesManager, SpecialModule, HTTPModule, PreHandlerModule
-from ..utils import is_api_path
+from ..utils import (
+    is_api_path,
+    JsonHttpException,
+    json_compact_dumps,
+)
 
 SITEHOST_MAIN = SiteHost(*DOMAINS)
 
@@ -54,29 +58,37 @@ class SpecialHandlerModule(SpecialModule):
         self, request: CustomRequest, http_exception: CustomHTTPException
     ) -> web.StreamResponse:
         if is_api_path(request.path):
-            error_format = "api.json"
+            data = {
+                "code": http_exception.status,
+                "message": http_exception.message,
+                "explain": http_exception.explain,
+            }
+            if isinstance(http_exception, JsonHttpException):
+                data.update(http_exception.additional_properties)
+            body = json_compact_dumps(data).encode("utf-8")
             content_type = "application/json"
         else:
             error_format = "main_site.html"
             content_type = "text/html"
+            async with aopen(
+                os.path.join("../templates/errors", error_format), "r", encoding="utf-8"
+            ) as f:
+                body = (await f.read()) % {
+                    "code": http_exception.status,
+                    "message": http_exception.message,
+                    "explain": http_exception.explain,
+                }
 
         if http_exception.headers is not None:
             silent_delitem(http_exception.headers, hdrs.CONTENT_TYPE)
-        async with aopen(
-            os.path.join("../templates/errors", error_format), "r", encoding="utf-8"
-        ) as f:
-            content = await f.read()
+
         return web.Response(
             status=http_exception.status,
             reason=http_exception.message,
             content_type=content_type,
             headers=http_exception.headers,
-            body=content
-            % {
-                "code": http_exception.status,
-                "message": http_exception.message,
-                "explain": http_exception.explain,
-            },
+            charset="utf-8",
+            body=body,
         )
 
     def get_router(self, request: CustomRequest):
