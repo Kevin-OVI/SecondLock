@@ -11,6 +11,7 @@ from core_utilities import CustomRequest, CustomHTTPException, HTTPStatus
 from module_loader import HTTPModule
 from types_ import REQUEST_HANDLER_FUNC
 from .types import CHECK_RATELIMIT_FUNCTIONS
+from .errors import JsonHttpException
 
 __all__ = (
     "RateLimitCheckerBase",
@@ -46,10 +47,11 @@ class RateLimitChecker(RateLimitCheckerBase):
         if asyncio.iscoroutine(limit):
             limit = await limit
         if limit:
-            raise CustomHTTPException(
+            limit = max(1, math.ceil(limit))
+            raise JsonHttpException(
                 HTTPStatus.TOO_MANY_REQUESTS,
-                headers={"Retry-After": f"{max(1, math.ceil(limit))}"},
-            )
+                headers={"Retry-After": f"{limit}"},
+            ).add_property("retry_after", limit)
 
     async def count_request(self, module: HTTPModule, request: CustomRequest):
         self._counter(module, request)
