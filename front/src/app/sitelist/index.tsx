@@ -5,6 +5,7 @@ import SiteElement, { Site } from "./SiteElement.tsx";
 import { CircularProgress } from "@mui/material";
 import { FieldErrors } from "../../utils/types.ts";
 import useAppContext from "../../utils/context/useAppContext.ts";
+import { HTTPError } from "../../utils/context/api.ts";
 
 function SiteListLoading() {
   return (
@@ -64,46 +65,46 @@ export default function SiteList() {
     { id, name, secret }: InputSite,
     errors: FieldErrors,
   ): Promise<boolean> {
-    const res = id
-      ? await api.fetchAPIRaiseStatus("PATCH", `/sites/${id}`, {
-          json: { name, secret },
-        })
-      : await api.fetchAPIRaiseStatus("POST", "/sites", {
-          json: { name, secret },
-        });
-
-    if (!res) return false;
-
-    if (res.status === 200 || res.status === 201) {
-      const { next_update: nextUpdate, ...site } = res.json;
-      if (id) updateExistingSite(site);
-      else addNewSite(site);
-      setNextUpdateAt(new Date().getTime() + Math.round(nextUpdate * 1000));
-      return true;
+    const params = { json: { name, secret } };
+    let response;
+    try {
+      response = id
+        ? await api.fetchAPI("PATCH", `/sites/${id}`, params)
+        : await api.fetchAPI("POST", "/sites", params);
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        if (e.status === 422) {
+          errors.secret = "Clé secrète invalide.";
+        } else {
+          api.handleUnexpectedError(e);
+        }
+      } else {
+        api.handleUnexpectedError(e);
+      }
+      return false;
     }
-    if (res.status === 422) {
-      errors.secret = "Clé secrète invalide.";
-    } else {
-      alert(`Erreur ${res.status} : ${res.json.explain}`);
-    }
-    return false;
+    const { next_update: nextUpdate, ...site } = response.json;
+    if (id) updateExistingSite(site);
+    else addNewSite(site);
+    setNextUpdateAt(new Date().getTime() + Math.round(nextUpdate * 1000));
+    return true;
   }
 
   const fetchSites = useCallback(async () => {
-    const res = await api.fetchAPIRaiseStatus("GET", "/sites");
-    if (!res) return null;
-
-    if (res.status === 200) {
-      const {
-        sites,
-        next_update: nextUpdate,
-      }: { sites: Site[]; next_update: number } = res.json;
-      setSites(sites);
-      return Math.round(nextUpdate * 1000);
-    } else {
-      alert(`Erreur ${res.status} : ${res.json.explain}`);
+    let response;
+    try {
+      response = await api.fetchAPI("GET", "/sites");
+    } catch (e) {
+      api.handleUnexpectedError(e);
+      return null;
     }
-    return null;
+
+    const {
+      sites,
+      next_update: nextUpdate,
+    }: { sites: Site[]; next_update: number } = response.json;
+    setSites(sites);
+    return Math.round(nextUpdate * 1000);
   }, [api]);
 
   useEffect(() => {

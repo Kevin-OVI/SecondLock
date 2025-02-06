@@ -3,6 +3,7 @@ import { FieldErrors } from "../../utils/types.ts";
 import { ACTION } from "../../utils/context/actionTypes.ts";
 import { Dispatch } from "react";
 import { Action } from "../../utils/context/Context.ts";
+import { HTTPError } from "../../utils/context/api.ts";
 
 interface EditUserFields {
   newUsername?: string;
@@ -42,52 +43,55 @@ export default function useSettings(): UseSettingsReturn {
       payload.new_password = fields.newPassword;
     }
 
-    const response = await api.fetchAPIRaiseStatus("PATCH", "/user", {
-      json: payload,
-    });
-    if (!response) {
+    let response;
+    try {
+      response = await api.fetchAPI("PATCH", "/user", {
+        json: payload,
+      });
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        if (e.status === 409) {
+          errors.username = "Le nom d'utilisateur est déjà utilisé.";
+        } else if (e.status === 403) {
+          errors.currentPassword = "Le mot de passe est incorrect.";
+        } else {
+          api.handleUnexpectedError(e);
+        }
+      } else {
+        api.handleUnexpectedError(e);
+      }
       return false;
     }
-    if (response.status === 200) {
-      dispatch({
-        type: ACTION.LOAD_SESSION,
-        payload: {
-          username: response.json.username,
-          token: response.json.token,
-        },
-      });
-      return true;
-    }
-    if (response.status === 409) {
-      errors.username = "Le nom d'utilisateur est déjà utilisé.";
-    } else if (response.status === 403) {
-      errors.currentPassword = "Le mot de passe est incorrect.";
-    } else {
-      alert(`Erreur ${response.status} : ${response.json.explain}`);
-    }
-    return false;
+    dispatch({
+      type: ACTION.LOAD_SESSION,
+      payload: response.json,
+    });
+    return true;
   }
 
   async function deleteUser(
     currentPassword: string,
     errors: FieldErrors,
   ): Promise<boolean> {
-    const response = await api.fetchAPIRaiseStatus("DELETE", "/user", {
-      json: { password: currentPassword },
-    });
-    if (!response) {
+    try {
+      await api.fetchAPI("DELETE", "/user", {
+        json: { password: currentPassword },
+      });
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        if (e.status === 403) {
+          errors.currentPassword = "Le mot de passe est incorrect.";
+        } else {
+          api.handleUnexpectedError(e);
+        }
+      } else {
+        api.handleUnexpectedError(e);
+      }
       return false;
     }
-    if (response.status === 204) {
-      dispatch({ type: ACTION.DISCONNECT });
-      return true;
-    }
-    if (response.status === 403) {
-      errors.currentPassword = "Le mot de passe est incorrect.";
-    } else {
-      alert(`Erreur ${response.status} : ${response.json.explain}`);
-    }
-    return false;
+    dispatch({ type: ACTION.DISCONNECT });
+    alert("Votre compte a bien été supprimé.");
+    return true;
   }
 
   return { dispatch, username, editUser, deleteUser };

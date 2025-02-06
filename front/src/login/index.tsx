@@ -15,6 +15,7 @@ import {
 } from "../utils/components/fields/validation.ts";
 import useAppContext from "../utils/context/useAppContext.ts";
 import { Navigate } from "react-router-dom";
+import { HTTPError } from "../utils/context/api.ts";
 
 export default function Login() {
   const [{ username: storedUsername, api, token }, dispatch] = useAppContext();
@@ -54,44 +55,36 @@ export default function Login() {
 
       const errors: FieldErrors = {};
 
-      if (register) {
-        const response = await api.fetchAPI("POST", "/register", {
-          json: { username, password },
-        });
-        if (response.status === 409) {
-          errors.username = "Le nom d'utilisateur est déjà utilisé.";
-        } else if (response.status === 201) {
-          dispatch({
-            type: ACTION.LOAD_SESSION,
-            payload: {
-              username: response.json.username,
-              token: response.json.token,
-            },
-          });
+      let response;
+      try {
+        response = await api.fetchAPI(
+          "POST",
+          register ? "/register" : "/login",
+          {
+            json: { username, password },
+          },
+        );
+        console.log(response);
+      } catch (e) {
+        if (e instanceof HTTPError) {
+          if (e.status === 409) {
+            errors.username = "Le nom d'utilisateur est déjà utilisé.";
+          } else if (e.status === 401) {
+            errors.username = errors.password =
+              "Nom d'utilisateur ou mot de passe incorrect";
+          } else {
+            api.handleUnexpectedError(e);
+          }
+          setErrors(errors);
         } else {
-          alert(`Erreur ${response.status} : ${response.json.explain}`);
+          api.handleUnexpectedError(e);
         }
-      } else {
-        const response = await api.fetchAPI("POST", "/login", {
-          json: { username, password },
-        });
-        if (response.status === 401) {
-          errors.username = errors.password =
-            "Nom d'utilisateur ou mot de passe incorrect";
-        } else if (response.status === 200) {
-          dispatch({
-            type: ACTION.LOAD_SESSION,
-            payload: {
-              username: response.json.username,
-              token: response.json.token,
-            },
-          });
-        } else {
-          alert(`Erreur ${response.status} : ${response.json.explain}`);
-        }
+        return;
       }
-
-      setErrors(errors);
+      dispatch({
+        type: ACTION.LOAD_SESSION,
+        payload: response.json,
+      });
     } finally {
       setButtonDisabled(false);
     }

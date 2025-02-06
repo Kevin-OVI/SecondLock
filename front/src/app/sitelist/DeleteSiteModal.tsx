@@ -3,6 +3,7 @@ import useGenericModal from "../../utils/modals/useGenericModal.ts";
 import { Site } from "./SiteElement.tsx";
 
 import useAppContext from "../../utils/context/useAppContext.ts";
+import { HTTPError } from "../../utils/context/api.ts";
 
 export type SiteRemoveCallback = (id: number) => void;
 
@@ -19,10 +20,19 @@ export default function DeleteSiteModal({
   const { open, setOpen } = useGenericModal();
 
   async function handleValidate() {
-    const res = await api.fetchAPI("DELETE", `/sites/${site.id}`);
-    if (!res) return;
-    if (res.status === 404) {
-      alert("Ce site n'existe pas, peut-être a-t-il déjà été supprimé.");
+    try {
+      await api.fetchAPI("DELETE", `/sites/${site.id}`);
+    } catch (e) {
+      if (e instanceof HTTPError) {
+        if (e.status === 404) {
+          alert("Ce site n'existe pas, peut-être a-t-il déjà été supprimé.");
+        } else {
+          api.handleUnexpectedError(e);
+        }
+      } else {
+        api.handleUnexpectedError(e);
+      }
+      return;
     }
     handleRemoveSite(site.id);
     setOpen(false);
