@@ -84,6 +84,7 @@ export default function EditUsernameModal({ editUser }: EditUsernameProps) {
         onKeyDown={handleEnter}
         errors={errors}
         setErrors={setErrors}
+        disabled={buttonsDisabled}
         autoFocus
       />
       <PasswordField
@@ -94,6 +95,7 @@ export default function EditUsernameModal({ editUser }: EditUsernameProps) {
         onKeyDown={handleEnter}
         errors={errors}
         setErrors={setErrors}
+        disabled={buttonsDisabled}
       />
     </GenericModal>
   );

@@ -110,6 +110,7 @@ export default function Login() {
             errors={errors}
             setErrors={setErrors}
             onKeyDown={handleEnter}
+            disabled={buttonDisabled}
           />
 
           <div className={styles.passwordField}>
@@ -119,6 +120,7 @@ export default function Login() {
               errors={errors}
               setErrors={setErrors}
               onKeyDown={handleEnter}
+              disabled={buttonDisabled}
             />
             {register && (
               <>
@@ -129,6 +131,7 @@ export default function Login() {
                   errors={errors}
                   setErrors={setErrors}
                   onKeyDown={handleEnter}
+                  disabled={buttonDisabled}
                 />
               </>
             )}

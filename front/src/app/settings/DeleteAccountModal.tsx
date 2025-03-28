@@ -72,6 +72,7 @@ export default function DeleteAccountModal({ deleteUser }: DeleteAccountProps) {
         onKeyDown={handleEnter}
         errors={errors}
         setErrors={setErrors}
+        disabled={buttonsDisabled}
       />
     </GenericModal>
   );

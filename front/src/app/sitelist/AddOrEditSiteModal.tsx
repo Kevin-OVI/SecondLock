@@ -86,6 +86,7 @@ export default function AddOrEditSiteModal({
         }}
         onKeyDown={handleEnter}
         error={errors.name}
+        disabled={buttonsDisabled}
         fullWidth
         required
         autoFocus
@@ -103,6 +104,7 @@ export default function AddOrEditSiteModal({
           }}
           onKeyDown={handleEnter}
           error={errors.secret}
+          disabled={buttonsDisabled}
           fullWidth
           required
         />

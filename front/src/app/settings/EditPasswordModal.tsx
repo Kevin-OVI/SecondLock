@@ -87,6 +87,7 @@ export default function EditPasswordModal({
         onKeyDown={handleEnter}
         errors={errors}
         setErrors={setErrors}
+        disabled={buttonsDisabled}
       />
       <PasswordField
         label="Nouveau mot de passe"
@@ -96,6 +97,7 @@ export default function EditPasswordModal({
         onKeyDown={handleEnter}
         errors={errors}
         setErrors={setErrors}
+        disabled={buttonsDisabled}
       />
       <PasswordStrengthBar password={newPassword} />
       <PasswordConfirmField
@@ -106,6 +108,7 @@ export default function EditPasswordModal({
         onKeyDown={handleEnter}
         errors={errors}
         setErrors={setErrors}
+        disabled={buttonsDisabled}
       />
     </GenericModal>
   );
