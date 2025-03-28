@@ -125,7 +125,7 @@ export class API {
         type: ACTION.DISPLAY_SNACKBAR,
         payload: (
           <Alert severity="error" variant="filled">
-            Erreur de connexion au serveur : {error.cause}.
+            Erreur de connexion au serveur : {error.cause.toString()}
           </Alert>
         ),
       });
@@ -150,16 +150,17 @@ export class API {
       }
       if (error.status === 429) {
         const retryIn: number | null = error.json?.retry_after;
+        const sentence = `Trop de requêtes, veuillez réessayer ${
+          retryIn === null
+            ? "plus tard"
+            : `dans ${formatDurationSeconds(retryIn)}`
+        }`;
 
         this.dispatch({
           type: ACTION.DISPLAY_SNACKBAR,
           payload: (
             <Alert severity="error" variant="filled">
-              Trop de requêtes, veuillez réessayer{" "}
-              {retryIn === null
-                ? "plus tard"
-                : `dans ${formatDurationSeconds(retryIn)}`}
-              .
+              {sentence}
             </Alert>
           ),
         });
@@ -180,7 +181,7 @@ export class API {
       type: ACTION.DISPLAY_SNACKBAR,
       payload: (
         <Alert severity="error" variant="filled">
-          Erreur inconnue : {error}.
+          Erreur inconnue : {error.toString()}.
         </Alert>
       ),
     });

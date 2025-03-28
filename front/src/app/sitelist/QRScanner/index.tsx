@@ -91,7 +91,7 @@ export default function QRScanner({ callback }: AddSiteQRCodeScannerProps) {
       type: ACTION.DISPLAY_SNACKBAR,
       payload: (
         <Alert severity="error" variant="filled">
-          Erreur lors de l'ouverture de la camera : {`${e}`}.
+          Erreur lors de l'ouverture de la camera : {`${e}`}
         </Alert>
       ),
     });
