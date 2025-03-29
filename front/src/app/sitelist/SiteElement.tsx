@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { ACTION } from "../../utils/context/actionTypes.ts";
 import AddOrEditSiteModal from "./AddOrEditSiteModal.tsx";
 import DeleteSiteModal, { SiteRemoveCallback } from "./DeleteSiteModal.tsx";
@@ -13,6 +13,7 @@ import { SiteInputCallback } from "./AddSiteButtons.tsx";
 import useAppContext from "../../utils/context/useAppContext.ts";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import CheckIcon from "@mui/icons-material/Check";
 
 export interface Site {
   id: number;
@@ -34,78 +35,73 @@ export default function SiteElement({
   const [codeCopied, setCodeCopied] = useState<boolean>(false);
   const [, dispatch] = useAppContext();
 
-  useEffect(() => {
-    if (codeCopied) {
-      const timer = setTimeout(() => {
-        setCodeCopied(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [codeCopied]);
+  const handleCopyCode = useCallback(async () => {
+    await navigator.clipboard.writeText(site.code);
+    setCodeCopied(true);
+  }, [site.code]);
+
+  const handleCopyLeave = useCallback(() => {
+    setCodeCopied(false);
+  }, []);
 
   return (
-    <div className={styles.accountItem}>
+    <div className={styles.accountItem} onMouseLeave={handleCopyLeave}>
       <div className={styles.accountName}>
         <div>{site.name}</div>
         <PopupState variant="popover">
-          {(popupState: InjectedProps) => (
-            <>
-              <IconButton {...bindTrigger(popupState)}>
-                <MoreHorizIcon />
-              </IconButton>
+          {(popupState: InjectedProps) => {
+            function handleEdit() {
+              dispatch({
+                type: ACTION.DISPLAY_MODAL,
+                payload: (
+                  <AddOrEditSiteModal
+                    editSite={site}
+                    callback={updateSiteCallback}
+                  />
+                ),
+              });
+              popupState.close();
+            }
 
-              <Menu {...bindMenu(popupState)}>
-                <MenuItem
-                  onClick={() => {
-                    dispatch({
-                      type: ACTION.DISPLAY_MODAL,
-                      payload: (
-                        <AddOrEditSiteModal
-                          editSite={site}
-                          callback={updateSiteCallback}
-                        />
-                      ),
-                    });
-                    popupState.close();
-                  }}
-                >
-                  Modifier
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    dispatch({
-                      type: ACTION.DISPLAY_MODAL,
-                      payload: (
-                        <DeleteSiteModal
-                          site={site}
-                          handleRemoveSite={handleRemoveSite}
-                        />
-                      ),
-                    });
-                    popupState.close();
-                  }}
-                >
-                  Supprimer
-                </MenuItem>
-              </Menu>
-            </>
-          )}
+            function handleDelete() {
+              dispatch({
+                type: ACTION.DISPLAY_MODAL,
+                payload: (
+                  <DeleteSiteModal
+                    site={site}
+                    handleRemoveSite={handleRemoveSite}
+                  />
+                ),
+              });
+              popupState.close();
+            }
+
+            return (
+              <>
+                <IconButton {...bindTrigger(popupState)}>
+                  <MoreHorizIcon />
+                </IconButton>
+
+                <Menu {...bindMenu(popupState)}>
+                  <MenuItem onClick={handleEdit}>Modifier</MenuItem>
+                  <MenuItem onClick={handleDelete}>Supprimer</MenuItem>
+                </Menu>
+              </>
+            );
+          }}
         </PopupState>
       </div>
       <Tooltip title={codeCopied ? "Code copié" : "Copier le code"}>
-        <div
-          className={styles.code}
-          key={site.code}
-          onClick={async () => {
-            await navigator.clipboard.writeText(site.code);
-            setCodeCopied(true);
-          }}
-        >
+        <div className={styles.code} key={site.code} onClick={handleCopyCode}>
           <div>
             {site.code.substring(0, 3)} {site.code.substring(3)}
           </div>
           <IconButton>
-            <ContentCopyIcon className={styles.copyIcon} />
+            {codeCopied ? (
+              <CheckIcon className={styles.copyIcon} />
+            ) : (
+              <ContentCopyIcon className={styles.copyIcon} />
+            )}
           </IconButton>
         </div>
       </Tooltip>
